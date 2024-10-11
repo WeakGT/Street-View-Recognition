@@ -114,8 +114,8 @@ def main():
 
 
     coord_output_file.close()
-    print("Process is done, total request = ", total_request-1)
-    print("    !!! Please remember to deactivate the ve before leaving !!!")
+    print("\nProcess is done, total request = ", total_request-1)
+    print("    !!! Please remember to deactivate the ve before leaving !!!\n")
 
 if __name__ == '__main__':
     main()
