@@ -1,11 +1,12 @@
 import os
 import numpy as np
+from geopy import distance
 import torch
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
-import datetime
+from datetime import datetime
 from stack_image import StackedImageDataset
 from model import StreetViewNet
 from args import args
@@ -16,7 +17,6 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device {device}")
 
 writer = SummaryWriter()
-
 
 transform = transforms.Compose([
     transforms.Resize((160, 160)),
@@ -42,6 +42,23 @@ loss_fn = torch.nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
 
 if __name__ == '__main__':
+    if args.eval_mode:
+        model = torch.load('./trained_models/street_view_model_100.pth')
+        model.eval()
+        sum_of_dist = 0
+        max_dist = 0
+        min_dist = 100000
+        for images, lable in DataLoader(val_dataset, batch_size=1):
+            images = images.to(device)
+            output = model(images).cpu().detach().numpy()
+            label = lable.cpu().detach().numpy()
+            sum_of_dist += distance.distance(output[0], label[0]).km
+            max_dist = max(max_dist, distance.distance(output[0], label[0]).km)
+            min_dist = min(min_dist, distance.distance(output[0], label[0]).km)
+        print(f"Mean {sum_of_dist / len(val_dataset)}")
+        print(f"Max {max_dist}")
+        print(f"Min {min_dist}")
+        exit()
     for epoch in tqdm(range(args.epochs)):
         model.train()
         train_loss = 0
@@ -67,6 +84,9 @@ if __name__ == '__main__':
                     val_loss += loss_fn(outputs, labels).item()
             writer.add_scalar('Loss/val', val_loss / len(val_dataset), epoch)
             print(f"Epoch {epoch}, val_loss: {val_loss / len(val_dataset)}")
+        if args.save_model and epoch and epoch % (args.epochs // 3) == 0:
+            torch.save(model, f'./trained_models/street_view_model_{epoch}.pth')
+            print("Model saved")
 
     if args.save_model:
         date = datetime.now().strftime("%m-%d")
