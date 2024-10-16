@@ -21,6 +21,10 @@ writer = SummaryWriter()
 transform = transforms.Compose([
     transforms.Resize((160, 160)),
     transforms.ToTensor(),
+    # adding flipping, affine pictures into dataset
+    transforms.RandomHorizontalFlip(),
+    transforms.RandomAffine(degrees=0, translate=(0.1, 0.1), scale=(0.8, 1.2)),
+    
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])   
 ])
 
