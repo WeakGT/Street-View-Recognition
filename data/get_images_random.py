@@ -1,6 +1,6 @@
 '''
 [Environment setting] (using virtual environment)
-.\myenv\Scripts\activate
+.\{your_path_name}\Scripts\activate
 
 [run the program]
 python get_images_random.py --output 640x640 --icount {your quota left} --key {your API key}
@@ -15,8 +15,6 @@ import csv
 import random
 import argparse
 from csv import writer
-# Consider using https://osmnx.readthedocs.io/en/stable/osmnx.html#osmnx.utils_geo.sample_points for street gps coords
-# Stack Overflow on how to get the coordinates: https://stackoverflow.com/questions/68367074/how-to-generate-random-lat-long-points-within-geographical-boundaries
 
 # step_size =  0.001
 
@@ -68,6 +66,7 @@ def main():
         params = {
             'key': args.key,
             'size': '640x640',
+            'source': 'outdoor',
             'location': str(addressLoc[0]) + ',' + str(addressLoc[1]),  # 注意這裡的順序，latitude 在前
             'heading': 0,
             'pitch': '-20',
@@ -95,6 +94,7 @@ def main():
                 params = {
                     'key': args.key,
                     'size': '640x640',
+                    'source': 'outdoor',
                     'location': str(addressLoc[0]) + ',' + str(addressLoc[1]),  # 注意這裡的順序，latitude 在前
                     'heading': str(angle),
                     'pitch': '-20',
