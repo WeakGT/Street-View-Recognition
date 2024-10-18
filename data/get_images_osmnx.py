@@ -80,7 +80,7 @@ def main():
             # Set the parameters for the API call to Google Street View
             params = {
                 'key': args.key,
-                'size': '640x640',
+                'size': '256x256',
                 'source': 'outdoor',
                 'location': str(addressLoc[0]) + ',' + str(addressLoc[1]),  # 注意這裡的順序，latitude 在前
                 'heading': 0,
