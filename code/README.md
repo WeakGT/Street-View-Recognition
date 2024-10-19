@@ -4,7 +4,7 @@
 
 ## Code Review
 - `main.py`: Entry point and training loop
-- `args.py`: Tunign hyperparameter
+- `args.py`: Tuning hyperparameter
 - `model.py`: Define model architecture
 - `stack_image.py`: Handle reading image from folder and stack them
 
