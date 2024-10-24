@@ -35,10 +35,11 @@ transform = transforms.Compose([
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
 
+generator = torch.Generator().manual_seed(args.random_seed)
 dataset = SingleImageDataset(data_path, transform=transform)
 train_size = int((1 - args.val_ratio) * len(dataset))
 val_size = len(dataset) - train_size
-train_dataset, val_dataset = torch.utils.data.random_split(dataset, [train_size, val_size])
+train_dataset, val_dataset = torch.utils.data.random_split(dataset, [train_size, val_size], generator=generator)
 
 model = StreetViewNet().to(device)
 class_lossfn = CrossEntropyLoss()
@@ -57,32 +58,6 @@ if args.start_from_last:
         pass
 
 if __name__ == '__main__':
-    if args.eval_mode:
-        checkpoint = torch.load('./trained_models/cl_33.pth')
-        model.load_state_dict(checkpoint['model_state_dict'])
-        model.eval()
-        sum_of_dist = 0
-        max_dist = 0
-        min_dist = 100000
-        correct_cnt = 0
-        for img, label in DataLoader(val_dataset, batch_size=1, shuffle=True, num_workers=args.load_data_workers, pin_memory=True):
-            img = img.to(device)
-            class_label, reg_label = label
-            class_label = class_label.to(device)
-            reg_label = reg_label.to(device)
-            class_pred, reg_pred = model(img)
-            class_pred = torch.argmax(class_pred, dim=1).detach().cpu().numpy()
-            reg_pred = reg_pred.detach().cpu().numpy()
-            correct_cnt += (class_pred == class_label.detach().cpu().numpy()).sum()
-
-            err_dist = distance.distance(reg_pred, reg_label).km
-            max_dist = max(max_dist, err_dist)
-            min_dist = min(min_dist, err_dist)
-        print(f"Mean Dist {sum_of_dist / len(val_dataset)}")
-        print(f"Max Dist {max_dist}")
-        print(f"Min Dist {min_dist}")
-        print(f'Class Accuracy: {correct_cnt / len(val_dataset)}')
-        exit()
     for epoch in tqdm(range(start_epoch, args.epochs)):
         model = model.train()
         train_loss = 0

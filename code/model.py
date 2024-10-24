@@ -24,3 +24,5 @@ class StreetViewNet(nn.Module):
         reg_output = self.reg_head(out)
         return class_output, reg_output
 
+    def get_embedding(self, x):
+        return self.backbone(x)
