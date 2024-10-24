@@ -1,21 +1,26 @@
 import torch
 import torch.nn as nn
+import torchvision.models as models
 
 try:
-    wide_resnet = torch.load('./trained_models/wide_resnet50.pth')
+    # wide_resnet = torch.load('./trained_models/wide_resnet50.pth')
+    vit = models.vit_b_32(pretrained=True)
 except FileNotFoundError:
-    wide_resnet = torch.hub.load('pytorch/vision:v0.6.0', 'wide_resnet50_2', pretrained=True)
-    torch.save(wide_resnet, './trained_models/wide_resnet50.pth')
+    # wide_resnet = torch.hub.load('pytorch/vision:v0.6.0', 'wide_resnet50_2', pretrained=True)
+    # torch.save(wide_resnet, './trained_models/wide_resnet50.pth')
+    vit = models.vit_b_32(pretrained=True)
+    torch.save(vit, './trained_models/vit.pth')
 
 class StreetViewNet(nn.Module):
     def __init__(self):
         super(StreetViewNet, self).__init__()
-        self.model = nn.Sequential(
-            nn.Conv2d(12, 3, (3, 3), padding=1),
-            nn.ReLU(),
-            wide_resnet,
-            nn.Linear(1000, 2)
-        )
+        self.backbone = vit
+        self.class_head = nn.Linear(1000, 23)
+        self.reg_head = nn.Linear(1000, 2)
 
     def forward(self, x):
-        return self.model(x)
+        out = self.backbone(x)
+        class_output = self.class_head(out)
+        reg_output = self.reg_head(out)
+        return class_output, reg_output
+

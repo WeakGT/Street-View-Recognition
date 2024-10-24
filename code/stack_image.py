@@ -49,3 +49,52 @@ class StackedImageDataset(Dataset):
         index = int(group_name.split('streetview')[-1])
         latitude, longitude = self.label_df.iloc[index]['latitude'], self.label_df.iloc[index]['longitude']
         return torch.tensor([latitude, longitude])
+
+class SingleImageDataset(Dataset):
+    def __init__(self, root_dir, transform=None):
+        self.root_dir = root_dir
+        self.transform = transform
+        self.groups = self._group_images()
+        self.label_df = pd.read_csv(os.path.join(root_dir, 'picture_coords.csv'))
+        self.city_list = ['Keelung', 'New Taipei', 'Taipei', 'Taoyuan', 
+                          'Hsinchu', 'Miaoli', 'Taichung', 'Changhua',
+                          'Nantou', 'Yunlin', 'Chiayi', 'Tainan',
+                          'Kaohsiung', 'Pingtung', 'Yilan', 'Hualien',
+                          'Taitung', 'Penghu', 'Green Island', 'Orchid Island',
+                          'Kinmen Country', 'Matsu', 'Lienchiang']
+
+    def _group_images(self):
+        groups = {}
+        for filename in os.listdir(self.root_dir):
+            if filename.endswith('.jpg'):
+                group_name = filename.rsplit('_', 1)[0]
+                if group_name not in groups:
+                    groups[group_name] = []
+                groups[group_name].append(filename)
+
+        return {k: v for k, v in groups.items()}
+
+
+    def __len__(self):
+        return len(self.groups)
+
+    def __getitem__(self, index):
+        group_name = list(self.groups.keys())[index]
+        img_file = self.groups[group_name][0]
+        img_path = os.path.join(self.root_dir, img_file)
+        img = Image.open(img_path).convert('RGB')
+        if self.transform:
+            img = self.transform(img) 
+        label = self._get_label(group_name)
+        return img, label
+
+    def _get_label(self, group_name):
+        index = int(group_name.split('streetview')[-1])
+        city = self.label_df.iloc[index]['city']
+        city_code = self.city_list.index(city)
+        # city_onehot = torch.zeros(len(self.city_list))
+        # city_onehot[city_code] = 1
+
+        city_lat = self.label_df.iloc[index]['latitude']
+        city_long = self.label_df.iloc[index]['longitude']
+        return torch.tensor(city_code), torch.tensor([city_lat, city_long])
