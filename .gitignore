@@ -1,2 +1,8 @@
 ## for macOS
 **/.DS_Store
+
+## Python Cache
+**/__pycache__/
+
+## Virtual Environment
+**/myenv/
