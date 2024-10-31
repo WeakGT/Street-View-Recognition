@@ -54,47 +54,55 @@ class SingleImageDataset(Dataset):
     def __init__(self, root_dir, transform=None):
         self.root_dir = root_dir
         self.transform = transform
+        if 'train' in root_dir:
+            self.label_df = pd.read_csv(os.path.join(root_dir, 'train_set.csv'))
+        else:
+            self.label_df = pd.read_csv(os.path.join(root_dir, 'val_set.csv'))
         self.groups = self._group_images()
-        self.label_df = pd.read_csv(os.path.join(root_dir, 'picture_coords.csv'))
-        self.city_list = ['Keelung', 'New Taipei', 'Taipei', 'Taoyuan', 
-                          'Hsinchu', 'Miaoli', 'Taichung', 'Changhua',
-                          'Nantou', 'Yunlin', 'Chiayi', 'Tainan',
-                          'Kaohsiung', 'Pingtung', 'Yilan', 'Hualien',
-                          'Taitung', 'Penghu', 'Green Island', 'Orchid Island',
-                          'Kinmen Country', 'Matsu', 'Lienchiang']
+        # self.city_list = ['Keelung', 'New Taipei', 'Taipei', 'Taoyuan', 
+        #                   'Hsinchu', 'Miaoli', 'Taichung', 'Changhua',
+        #                   'Nantou', 'Yunlin', 'Chiayi', 'Tainan',
+        #                   'Kaohsiung', 'Pingtung', 'Yilan', 'Hualien',
+        #                   'Taitung', 'Penghu', 'Green Island', 'Orchid Island',
+        #                   'Kinmen Country', 'Matsu', 'Lienchiang']
+        self.country_list = ['Russia', 'Faroe Islands', 'United States', 'Mongolia', 'Slovenia', 'Taiwan', 'Aland', 'Madagascar', 'Spain', 'Puerto Rico', 'Jordan', 'Montenegro', 'Venezuela', 'Ukraine', 'Mozambique', 'Italy', 'Chile', 'South Georgia and South Sandwich Islands', 'Netherlands', 'Bolivia', 'Switzerland', 'Australia', 'United Kingdom', 'Poland', 'Lesotho', 'Slovakia', 'San Marino', 'United Arab Emirates', 'New Zealand', 'Palestine', 'India', 'France', 'Reunion', 'Austria', 'Israel', 'Curacao', 'Senegal', 'Jersey', 'Serbia', 'Denmark', 'Hungary', 'Germany', 'Nepal', 'Turkey', 'Mexico', 'Hong Kong', 'Portugal', 'Gibraltar', 'Eswatini', 'Tunisia', 'Greenland', 'Andorra', 'Costa Rica', 'Luxembourg', 'Ireland', 'Thailand', 'Bulgaria', 'Kenya', 'Tanzania', 'Belarus', 'Egypt', 'Canada', 'Northern Mariana Islands', 'US Virgin Islands', 'Peru', 'American Samoa', 'Kyrgyzstan', 'Colombia', 'South Sudan', 'Ecuador', 'Nigeria', 'Vietnam', 'Czechia', 'Svalbard and Jan Mayen', 'Brazil', 'Singapore', 'Sri Lanka', 'Laos', 'North Macedonia', 'South Korea', 'Monaco', 'Argentina', 'Macao', 'Croatia', 'Indonesia', 'Bermuda', 'Norway', 'Iceland', 'Myanmar', 'Qatar', 'Guam', 'Uruguay', 'Isle of Man', 'Armenia', 'South Africa', 'Bhutan', 'Philippines', 'Malaysia', 'Latvia', 'Uganda', 'Lebanon', 'Romania', 'Pakistan', 'Sweden', 'Malta', 'Antarctica', 'Paraguay', 'Botswana', 'Guatemala', 'Ghana', 'Belgium', 'Japan', 'Albania', 'Greece', 'Lithuania', 'Martinique', 'China', 'Iraq', 'Dominican Republic', 'Estonia', 'Finland', 'Pitcairn Islands', 'Cambodia', 'Bangladesh']
 
     def _group_images(self):
-        groups = {}
-        for filename in os.listdir(self.root_dir):
-            if filename.endswith('.jpg'):
-                group_name = filename.rsplit('_', 1)[0]
-                if group_name not in groups:
-                    groups[group_name] = []
-                groups[group_name].append(filename)
+        # groups = {}
+        # for filename in os.listdir(self.root_dir):
+        #     if filename.endswith('.jpg'):
+        #         group_name = filename
+        #         if group_name not in groups:
+        #             groups[group_name] = []
+        #         groups[group_name].append(filename)
+        groups = self.label_df['image_id'].to_list()
 
-        return {k: v for k, v in groups.items()}
+        return groups
 
 
     def __len__(self):
         return len(self.groups)
 
     def __getitem__(self, index):
-        group_name = list(self.groups.keys())[index]
-        img_file = self.groups[group_name][0]
+        img_file = self.groups[index]
+        # img_file = self.groups[group_name][0]
         img_path = os.path.join(self.root_dir, img_file)
         img = Image.open(img_path).convert('RGB')
         if self.transform:
             img = self.transform(img) 
-        label = self._get_label(group_name)
+        label = self._get_label(index)
         return img, label
 
-    def _get_label(self, group_name):
-        index = int(group_name.split('streetview')[-1])
-        city = self.label_df.iloc[index]['city']
-        city_code = self.city_list.index(city)
+    def _get_label(self, index):
+        # index = int(group_name.split('streetview')[-1])
+        # city = self.label_df.iloc[index]['city']
+        # city_code = self.city_list.index(city)
         # city_onehot = torch.zeros(len(self.city_list))
         # city_onehot[city_code] = 1
 
-        city_lat = self.label_df.iloc[index]['latitude']
-        city_long = self.label_df.iloc[index]['longitude']
-        return torch.tensor(city_code), torch.tensor([city_lat, city_long])
+
+        # city_lat = self.label_df.iloc[index]['latitude']
+        # city_long = self.label_df.iloc[index]['longitude']
+        country = self.label_df['country'][index]
+        country_code = self.country_list.index(country)
+        return torch.tensor(country_code)

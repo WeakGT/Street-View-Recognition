@@ -15,14 +15,14 @@ class StreetViewNet(nn.Module):
     def __init__(self):
         super(StreetViewNet, self).__init__()
         self.backbone = vit
-        self.class_head = nn.Linear(1000, 23)
-        self.reg_head = nn.Linear(1000, 2)
+        self.class_head = nn.Linear(1000, 124)
+        # self.reg_head = nn.Linear(1000, 2)
 
     def forward(self, x):
         out = self.backbone(x)
         class_output = self.class_head(out)
-        reg_output = self.reg_head(out)
-        return class_output, reg_output
+        # reg_output = self.reg_head(out)
+        return class_output
 
     def get_embedding(self, x):
         return self.backbone(x)
