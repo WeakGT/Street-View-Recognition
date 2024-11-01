@@ -15,8 +15,8 @@ from stack_image import StackedImageDataset, SingleImageDataset
 from model import StreetViewNet
 from args import args
 
-train_data_path = '../processed/train'
-val_data_path = '../processed/val'
+data_path = '../processed/'
+
 
 # available_gpus = [i for i in range(torch.cuda.device_count())]
 # least_used_gpu = min(available_gpus, key=lambda i: torch.cuda.memory_reserved(i))
@@ -29,28 +29,29 @@ start_time = datetime.now().strftime("%m-%d-%H-%M")
 writer = SummaryWriter()
 
 transform = transforms.Compose([
-    transforms.RandomCrop(80),
+    # transforms.RandomCrop(80),
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
     transforms.RandomHorizontalFlip(p=0.5),
-    transforms.ColorJitter(brightness=0.5, contrast=0.5, saturation=0.5, hue=0.1),
-    transforms.RandomAffine(degrees=0, translate=(0.1, 0.1), scale=(0.8, 1.2)),
+    transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
+    # transforms.RandomAffine(degrees=0, translate=(0.1, 0.1), scale=(0.8, 1.2)),
     
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
 
 standard_transform = transforms.Compose([
-    transforms.RandomCrop(80),
+    # transforms.RandomCrop(80),
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
 
 generator = torch.Generator().manual_seed(args.random_seed)
-train_dataset = SingleImageDataset(train_data_path, transform=transform)
-val_dataset = SingleImageDataset(val_data_path, transform=standard_transform)
+train_dataset = SingleImageDataset(data_path, transform=transform, is_train=True)
+val_dataset = SingleImageDataset(data_path, transform=standard_transform, is_train=False)
+num_class = len(train_dataset.country_list)
 
-model = StreetViewNet().to(device)
+model = StreetViewNet(num_class=num_class).to(device)
 # Calculated the data weights first
 class_weights = compute_class_weight(
     class_weight='balanced',
@@ -60,7 +61,7 @@ class_weights = compute_class_weight(
 class_weights = torch.FloatTensor(class_weights).to(device)
 class_lossfn = CrossEntropyLoss(label_smoothing=args.label_smoothing, weight=class_weights)
 reg_lossfn = MSELoss()
-f1_metric = MulticlassF1Score(num_classes=124, average='macro')
+f1_metric = MulticlassF1Score(num_classes=num_class, average='macro')
 
 optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
 start_epoch = 0
@@ -79,6 +80,7 @@ if __name__ == '__main__':
     for epoch in tqdm(range(start_epoch, args.epochs)):
         model = model.train()
         train_loss = 0
+        correct_count = 0
         f1_metric.reset()
         best_f1 = 0
         best_checkpoint = {}
@@ -100,17 +102,20 @@ if __name__ == '__main__':
             optimizer.step()
             train_loss += class_loss.item()
             f1_metric.update(class_pred, label)
+            correct_count += (class_pred.argmax(dim=1) == label).sum().item()
 
         f1_score = f1_metric.compute()
         writer.add_scalar('Loss/train', train_loss / len(train_dataset), epoch)
         writer.add_scalar('f1_score/train', f1_score, epoch)
         print(f"Epoch {epoch}, train_loss: {train_loss / len(train_dataset)}")
         print(f"Epoch {epoch}, train_f1: {f1_score}")
+        print(f"Epoch {epoch}, train_accuracy: {correct_count / len(train_dataset)}")
 
 
         # Run the validation
         model.eval()
         val_loss = 0
+        correct_count = 0
         f1_metric.reset()
         with torch.no_grad():
             for img, label in DataLoader(val_dataset, batch_size=args.batch_size):
@@ -125,11 +130,13 @@ if __name__ == '__main__':
                 # total_loss = (class_loss + args.alpha * reg_loss)
                 val_loss += class_loss.item()
                 f1_metric.update(class_pred, label)
+                correct_count += (class_pred.argmax(dim=1) == label).sum().item()
         f1_score = f1_metric.compute()
         writer.add_scalar('Loss/val', val_loss / len(val_dataset), epoch)
         writer.add_scalar('f1_score/val', f1_score, epoch)
         print(f"Epoch {epoch}, val_loss: {val_loss / len(val_dataset)}")
         print(f"Epoch {epoch}, val_f1: {f1_score}")
+        print(f"Epoch {epoch}, val_accuracy: {correct_count / len(val_dataset)}")
         # validation end
 
         # save model every checkpoint_step epochs

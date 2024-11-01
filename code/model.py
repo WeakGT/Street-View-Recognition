@@ -12,10 +12,10 @@ except FileNotFoundError:
     torch.save(vit, './trained_models/vit.pth')
 
 class StreetViewNet(nn.Module):
-    def __init__(self):
+    def __init__(self, num_class):
         super(StreetViewNet, self).__init__()
         self.backbone = vit
-        self.class_head = nn.Linear(1000, 124)
+        self.class_head = nn.Linear(1000, num_class)
         # self.reg_head = nn.Linear(1000, 2)
 
     def forward(self, x):

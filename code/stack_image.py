@@ -51,13 +51,15 @@ class StackedImageDataset(Dataset):
         return torch.tensor([latitude, longitude])
 
 class SingleImageDataset(Dataset):
-    def __init__(self, root_dir, transform=None):
+    def __init__(self, root_dir, transform=None, is_train=True):
         self.root_dir = root_dir
         self.transform = transform
-        if 'train' in root_dir:
-            self.label_df = pd.read_csv(os.path.join(root_dir, 'train_set.csv'))
+        if is_train:
+            self.label_df = pd.read_csv(os.path.join(root_dir, 'train.csv'))
+            self.data_dir = os.path.join(root_dir, 'train')
         else:
-            self.label_df = pd.read_csv(os.path.join(root_dir, 'val_set.csv'))
+            self.label_df = pd.read_csv(os.path.join(root_dir, 'val.csv'))
+            self.data_dir = os.path.join(root_dir, 'val')
         self.groups = self._group_images()
         # self.city_list = ['Keelung', 'New Taipei', 'Taipei', 'Taoyuan', 
         #                   'Hsinchu', 'Miaoli', 'Taichung', 'Changhua',
@@ -65,7 +67,10 @@ class SingleImageDataset(Dataset):
         #                   'Kaohsiung', 'Pingtung', 'Yilan', 'Hualien',
         #                   'Taitung', 'Penghu', 'Green Island', 'Orchid Island',
         #                   'Kinmen Country', 'Matsu', 'Lienchiang']
-        self.country_list = ['Russia', 'Faroe Islands', 'United States', 'Mongolia', 'Slovenia', 'Taiwan', 'Aland', 'Madagascar', 'Spain', 'Puerto Rico', 'Jordan', 'Montenegro', 'Venezuela', 'Ukraine', 'Mozambique', 'Italy', 'Chile', 'South Georgia and South Sandwich Islands', 'Netherlands', 'Bolivia', 'Switzerland', 'Australia', 'United Kingdom', 'Poland', 'Lesotho', 'Slovakia', 'San Marino', 'United Arab Emirates', 'New Zealand', 'Palestine', 'India', 'France', 'Reunion', 'Austria', 'Israel', 'Curacao', 'Senegal', 'Jersey', 'Serbia', 'Denmark', 'Hungary', 'Germany', 'Nepal', 'Turkey', 'Mexico', 'Hong Kong', 'Portugal', 'Gibraltar', 'Eswatini', 'Tunisia', 'Greenland', 'Andorra', 'Costa Rica', 'Luxembourg', 'Ireland', 'Thailand', 'Bulgaria', 'Kenya', 'Tanzania', 'Belarus', 'Egypt', 'Canada', 'Northern Mariana Islands', 'US Virgin Islands', 'Peru', 'American Samoa', 'Kyrgyzstan', 'Colombia', 'South Sudan', 'Ecuador', 'Nigeria', 'Vietnam', 'Czechia', 'Svalbard and Jan Mayen', 'Brazil', 'Singapore', 'Sri Lanka', 'Laos', 'North Macedonia', 'South Korea', 'Monaco', 'Argentina', 'Macao', 'Croatia', 'Indonesia', 'Bermuda', 'Norway', 'Iceland', 'Myanmar', 'Qatar', 'Guam', 'Uruguay', 'Isle of Man', 'Armenia', 'South Africa', 'Bhutan', 'Philippines', 'Malaysia', 'Latvia', 'Uganda', 'Lebanon', 'Romania', 'Pakistan', 'Sweden', 'Malta', 'Antarctica', 'Paraguay', 'Botswana', 'Guatemala', 'Ghana', 'Belgium', 'Japan', 'Albania', 'Greece', 'Lithuania', 'Martinique', 'China', 'Iraq', 'Dominican Republic', 'Estonia', 'Finland', 'Pitcairn Islands', 'Cambodia', 'Bangladesh']
+        self.country_list = ['United States', 'Australia', 'Thailand', 'Kenya',
+                             'South Africa', 'India', 'Canada', 'Finland', 
+                             'France', 'New Zealand', 'Singapore', 'Japan', 
+                             'Germany'] 
 
     def _group_images(self):
         # groups = {}
@@ -75,7 +80,7 @@ class SingleImageDataset(Dataset):
         #         if group_name not in groups:
         #             groups[group_name] = []
         #         groups[group_name].append(filename)
-        groups = self.label_df['image_id'].to_list()
+        groups = self.label_df['image'].to_list()
 
         return groups
 
@@ -86,7 +91,7 @@ class SingleImageDataset(Dataset):
     def __getitem__(self, index):
         img_file = self.groups[index]
         # img_file = self.groups[group_name][0]
-        img_path = os.path.join(self.root_dir, img_file)
+        img_path = os.path.join(self.data_dir, img_file)
         img = Image.open(img_path).convert('RGB')
         if self.transform:
             img = self.transform(img) 
