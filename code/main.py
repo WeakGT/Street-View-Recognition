@@ -67,7 +67,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
 start_epoch = 0
 if args.start_from_last:
     try:
-        checkpoint = torch.load('./trained_models/cl.pth')
+        checkpoint = torch.load('./trained_models/11-02-00-27/model-19.pth')
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         start_epoch = checkpoint['epoch'] + 1

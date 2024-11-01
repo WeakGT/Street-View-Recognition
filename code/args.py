@@ -21,13 +21,13 @@ class Args:
 
     lr: float = 0.0001
     val_ratio: float = 0.2
-    epochs: int = 500
+    epochs: int = 50
     batch_size: int = 128
-    start_from_last: bool = False
+    start_from_last: bool = True
     load_data_workers: int = 8
-    checkpoint_step: int = 100
+    checkpoint_step: int = 20
     alpha: float = 0.1
     random_seed: int = 42
-    label_smoothing: float = 0.0
+    label_smoothing: float = 0.2
 
 args = Args()
