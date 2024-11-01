@@ -3,7 +3,7 @@
 .\{your_path_name}\Scripts\activate
 
 [run the program]
-python get_images_osmnx.py --city {city name} --output 256x256 --icount {your quota left} --key {your API key}
+python get_images_osmnx.py --city {city name} --output 256x256_global --icount {your quota left} --key {your API key}
 
 [leave virtual environment]
 deactivate
@@ -30,12 +30,6 @@ def get_args():
 args = get_args()
 url = 'https://maps.googleapis.com/maps/api/streetview'
 start_from = 0
-
-def generate_random_coordinate():
-    lat = round(random.uniform(22.0, 25.5), 4)  # 台灣的緯度範圍
-    lon = round(random.uniform(120.0, 122.0), 4)  # 台灣的經度範圍
-    return (lat, lon)
-
 
 def main():
 
@@ -103,7 +97,7 @@ def main():
                 with open(os.path.join(args.output, f'streetview{start_from + successful_data}_{heading}.jpg'), "wb") as file:
                     file.write(response.content)
                 # Save the coordinates to the output file
-                csv_writer.writerow([start_from + successful_data, addressLoc[0], addressLoc[1], args.city])  # 注意這裡的順序，latitude 在前
+                csv_writer.writerow([start_from + successful_data, f'streetview{start_from + successful_data}_{heading}.jpg', addressLoc[0], addressLoc[1], args.city])  # 注意這裡的順序，latitude 在前
                 print(f"{addressLoc} Received image successfully.")            
                 
                 '''
