@@ -6,6 +6,10 @@ data_folder = '256x256_global'
 csv_path = os.path.join(data_folder, 'picture_coords.csv')
 txt_path = 'bad_coords.txt'
 
+while input('Have you closed the file "picture_coords.csv" yet? (y/n)') != 'y':
+    continue    
+print('Start progressing...')
+
 # 讀取要刪除的 index
 with open(txt_path, 'r') as f:
     indices_to_delete = set(int(line.strip()) for line in f if line.strip().isdigit())
@@ -53,3 +57,4 @@ df['index'] = df.index  # 更新 index 欄位
 df.to_csv(csv_path, index=False)
 print(f"Updated CSV saved to {csv_path}.")
 print(f"Deleted {deleted_images} images, updated indices, and renamed image files.")
+print('\nPlease remember to truncate the "bad_coords.txt" file.')

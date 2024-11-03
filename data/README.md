@@ -18,13 +18,13 @@ about 1000 images for each city (country)
 - Asia
 [v] Bangkok (Thailand)
 [v] New Delhi (India)
-[-] Osaka (Japan)
-[-] (Singapore)
+[] Osaka (Japan)
+[] (Singapore)
 
 - Europe
 [v] Paris (France)
 [v] Helsinki (Finland)
-[-] Berlin (Germany)
+[] Berlin (Germany)
 
 - America
 [v] New York (United States)

@@ -3,7 +3,7 @@
 .\{your_path_name}\Scripts\activate
 
 [run the program]
-python get_images_global.py --country {country name} --output 256x256_global --icount {your quota left} --key {your API key}
+python get_images_global.py --city{city_name} --country {country name} --output 256x256_global --icount {your quota left} --key {your API key}
 
 [leave virtual environment]
 deactivate
@@ -22,8 +22,8 @@ from csv import writer
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--city", help="The city name you want to generate GPS coordinates from", required=True, type=str) # default='Nairobi'
-    parser.add_argument("--country", help="The country name you want to generate GPS coordinates from", required=True, type=str) # default='Kenya'
+    parser.add_argument("--city", help="The city name you want to generate GPS coordinates from", default='Bangkok', type=str) # required=True
+    parser.add_argument("--country", help="The country name you want to generate GPS coordinates from", default='Thailand', type=str) # default='Kenya' required=True
     parser.add_argument("--output", help="The output folder where the images will be stored, (defaults to: 256x256_global/)", default='256x256_global/', type=str)
     parser.add_argument("--icount", help="The amount of images to pull (defaults to 10)", default=10, type=int)
     parser.add_argument("--key", help="Your Google Street View API Key", type=str, required=True)
