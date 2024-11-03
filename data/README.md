@@ -33,7 +33,7 @@ about 2000 images for each city (country)
 - Africa
 [x] Cairo (Egypt) No images on Google API
 [x] Luanda (Angola) No images on Google API
-[-] Gauteng (South Africa)
+[v] Gauteng (South Africa)
 [v] Nairobi (Kenya)
 
 - Australia
