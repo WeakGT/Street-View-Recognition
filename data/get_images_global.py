@@ -15,15 +15,14 @@ import os               # filesys
 import csv
 import random
 import argparse
-import generate_random_coordinate as grc
 from csv import writer
 
 # step_size =  0.001
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--city", help="The city name you want to generate GPS coordinates from", default='Bangkok', type=str) # required=True
-    parser.add_argument("--country", help="The country name you want to generate GPS coordinates from", default='Thailand', type=str) # default='Kenya' required=True
+    parser.add_argument("--city", help="The city name you want to generate GPS coordinates from", default='Gauteng', type=str) # required=True
+    parser.add_argument("--country", help="The country name you want to generate GPS coordinates from", default='South Africa', type=str) # required=True
     parser.add_argument("--output", help="The output folder where the images will be stored, (defaults to: 256x256_global/)", default='256x256_global/', type=str)
     parser.add_argument("--icount", help="The amount of images to pull (defaults to 10)", default=10, type=int)
     parser.add_argument("--key", help="Your Google Street View API Key", type=str, required=True)

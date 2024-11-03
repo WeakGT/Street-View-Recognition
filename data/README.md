@@ -11,9 +11,9 @@
 3. Deactivate before leaving: `deactivate`
 
 ## Check List (global ver.)
-about 1000 images for each city (country)
-`v`: 1000 images
-`-`: images data不多，要再collect(或刪除)
+about 2000 images for each city (country)
+`v`: 2000 images
+`-`: 1000 images，要再collect
 
 - Asia
 [v] Bangkok (Thailand)
@@ -33,7 +33,7 @@ about 1000 images for each city (country)
 - Africa
 [x] Cairo (Egypt) No images on Google API
 [x] Luanda (Angola) No images on Google API
-[v] Gauteng (South Africa)
+[-] Gauteng (South Africa)
 [v] Nairobi (Kenya)
 
 - Australia
