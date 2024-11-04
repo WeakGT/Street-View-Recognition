@@ -6,7 +6,7 @@ source myenv/bin/activate  # On macOS/Linux
 
 ## Install dependencies:
 ```
-pip install -r requirements.txt
+pip install -r requirement.txt
 ```
 
 ## Running the Game
