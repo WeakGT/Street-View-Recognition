@@ -49,7 +49,7 @@ def main():
         csv_writer = writer(coord_output_file)
 
     # create the graph G
-    G = ox.graph_from_place(args.city + ", South Africa", network_type = 'drive')
+    G = ox.graph_from_place(args.city + ", Canada", network_type = 'drive')
     Gp = ox.project_graph(G)
     
     total_request = successful_data = 0
@@ -97,7 +97,7 @@ def main():
                 with open(os.path.join(args.output, f'streetview{start_from + successful_data}_{heading}.jpg'), "wb") as file:
                     file.write(response.content)
                 # Save the coordinates to the output file
-                csv_writer.writerow([start_from + successful_data, f'streetview{start_from + successful_data}_{heading}.jpg', addressLoc[0], addressLoc[1], "South Africa"])  # 注意這裡的順序，latitude 在前
+                csv_writer.writerow([start_from + successful_data, f'streetview{start_from + successful_data}_{heading}.jpg', addressLoc[0], addressLoc[1], "Canada"])  # 注意這裡的順序，latitude 在前
                 print(f"{addressLoc} Received image successfully.")            
                 
                 '''
