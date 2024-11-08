@@ -11,9 +11,9 @@
 3. Deactivate before leaving: `deactivate`
 
 ## Check List (global ver.)
-about 2000 images for each city (country)
-`v`: 2000 images
-`-`: 1000 images，要再collect
+about 5000 images for each city (country)
+`v`: 5000 images
+
 
 - Asia
 [v] Bangkok (Thailand)
@@ -37,5 +37,5 @@ about 2000 images for each city (country)
 [v] Nairobi (Kenya)
 
 - Australia
-[v] Sydney (Australia)
+[-] Sydney (Australia)
 [v] Auckland (New Zealand)

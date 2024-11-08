@@ -8,6 +8,10 @@ python get_images_osmnx.py --city {city name} --output 256x256_global --icount {
 [leave virtual environment]
 deactivate
 '''
+
+
+# code starts here
+'''
 import osmnx as ox
 import geopandas as gpd
 import requests         # HTTP req for API
@@ -100,29 +104,29 @@ def main():
                 csv_writer.writerow([start_from + successful_data, f'streetview{start_from + successful_data}_{heading}.jpg', addressLoc[0], addressLoc[1], "Canada"])  # 注意這裡的順序，latitude 在前
                 print(f"{addressLoc} Received image successfully.")            
                 
-                '''
+                
                 # get the images of other angles
-                for angle in [90, 180, 270]:
+                # for angle in [90, 180, 270]:
                     # Set the parameters for the API call to Google Street View
-                    params = {
-                        'key': args.key,
-                        'size': '640x640',
-                        'source': 'outdoor',
-                        'location': str(addressLoc[0]) + ',' + str(addressLoc[1]),  # 注意這裡的順序，latitude 在前
-                        'heading': str(angle),
-                        'pitch': '-20',
-                        'fov': '90'
-                    }
-                    response = requests.get(url, params)
-                    if len(response.content) < 10000:
-                        # handle the non-existing image
-                        print(f"{addressLoc}, {angle} Error: No image available. Received blank images.")
-                        continue
-                    else:
-                        # Save the image to the output folder
-                        with open(os.path.join(args.output, f'streetview{start_from + successful_data}_{angle}.jpg'), "wb") as file:
-                            file.write(response.content)
-                '''
+                #    params = {
+                #        'key': args.key,
+                #        'size': '640x640',
+                #        'source': 'outdoor',
+                #        'location': str(addressLoc[0]) + ',' + str(addressLoc[1]),  # 注意這裡的順序，latitude 在前
+                #        'heading': str(angle),
+                #        'pitch': '-20',
+                #        'fov': '90'
+                #    }
+                #   response = requests.get(url, params)
+                #    if len(response.content) < 10000:
+                #        # handle the non-existing image
+                #        print(f"{addressLoc}, {angle} Error: No image available. Received blank images.")
+                #        continue
+                #    else:
+                #        # Save the image to the output folder
+                #        with open(os.path.join(args.output, f'streetview{start_from + successful_data}_{angle}.jpg'), "wb") as file:
+                #            file.write(response.content)
+                
                 successful_data = successful_data + 1
                 # total_request = total_request + 3
 
@@ -133,3 +137,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+'''
