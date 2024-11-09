@@ -21,8 +21,8 @@ from csv import writer
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--city", help="The city name you want to generate GPS coordinates from", default='Sydney', type=str) # required=True
-    parser.add_argument("--country", help="The country name you want to generate GPS coordinates from", default='Australia', type=str) # required=True
+    parser.add_argument("--city", help="The city name you want to generate GPS coordinates from", default='Auckland', type=str) # required=True
+    parser.add_argument("--country", help="The country name you want to generate GPS coordinates from", default='New Zealand', type=str) # required=True
     parser.add_argument("--output", help="The output folder where the images will be stored, (defaults to: 256x256_global/)", default='256x256_global/', type=str)
     parser.add_argument("--icount", help="The amount of images to pull (defaults to 10)", default=10, type=int)
     parser.add_argument("--key", help="Your Google Street View API Key", type=str, required=True)
