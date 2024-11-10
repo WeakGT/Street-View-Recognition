@@ -6,3 +6,8 @@
 
 ## Virtual Environment
 **/myenv/
+
+## Code
+**/trained_models/
+**/runs/
+**/processed/
