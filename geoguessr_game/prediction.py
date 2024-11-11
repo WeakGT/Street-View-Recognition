@@ -1,14 +1,12 @@
-# import torch
+import torch
 '''
 import model and make prediction here
 '''
 
 class Model:
     def __init__(self, model_path):
-        # self.model = ...
-        # self.model.load_state_dict(torch.load(model_path))
-        # self.model.eval()  # 設置模型為評估模式
-        pass
+        self.model = torch.load(model_path)
+        self.model.eval()
 
     def predict(self, images):
         # 假設 images 是四張圖片的 Tensor

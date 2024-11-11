@@ -2,7 +2,8 @@ import pygame
 import random
 import torch
 from config import *
-from prediction import Model  # 替換成你的 AI 模型文件
+import sys
+from prediction import Model # 替換成你的 AI 模型文件
 
 class Game:
     def __init__(self, window):
