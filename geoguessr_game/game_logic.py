@@ -14,6 +14,7 @@ class Game:
         self.player_guess_correct = False
         self.model_guess_correct = False
         self.player_choosen_city = -1
+        self.model_choosen_city = -1
         self.correct_city = None
         self.model = Model("path/to/your/model.pth")  # 替換模型路徑
         self.load_images_and_options()
@@ -26,16 +27,22 @@ class Game:
         self.show_result_screen = False  # 新增一個屬性來控制顯示結果畫面
         self.round_start_timer = pygame.time.get_ticks()  # 初始化計時器
 
+        self.show_start_screen = True  # 用來控制是否顯示主遊戲介面
+        self.start_button_rect = pygame.Rect(WINDOW_WIDTH // 2 - 100, WINDOW_HEIGHT // 2 + 190, 200, 60)
+
+    def start_game(self):
+        # 開始遊戲，隱藏主介面
+        self.show_start_screen = False
+        self.show_round_start_screen = True  # 設置為顯示第一回合的開始畫面
+        self.round_start_timer = pygame.time.get_ticks()
+
     def next_round(self):
         if self.current_round < NUM_ROUNDS:
-            self.player_choosen_city = -1
             self.current_round += 1
             self.time_left = ROUND_TIME
             self.load_images_and_options()
             self.show_result_screen = True  # 顯示結果畫面
             self.result_screen_timer = pygame.time.get_ticks()  # 設置結果畫面的計時器
-            #self.show_round_start_screen = True  # 設置為顯示回合開始畫面
-            #self.round_start_timer = pygame.time.get_ticks()  # 設置回合開始計時器
         else:
             self.end_game()
 
@@ -49,7 +56,6 @@ class Game:
         ]
         self.city_options = ["City1", "City2", "City3", "City4"]  # 替換城市名稱
         self.correct_city = self.city_options[0]  # 假設正確答案總是第一個選項
-        self.player_answered = False
         self.model_answered = False
         self.result_timer = None
         
@@ -75,6 +81,7 @@ class Game:
                 print("Correct!")
             else:
                 print("Wrong answer!")
+                self.points_display = f"+{0}"
             self.points_display_timer = pygame.time.get_ticks()
             self.result_timer = pygame.time.get_ticks()  # 設置結果顯示計時器
 
@@ -83,6 +90,7 @@ class Game:
         # images_tensor = self.convert_images_to_tensor(self.images)
         # prediction = self.model.predict(images_tensor)
         # # 假設模型正確，計算模型的分數
+        # self.model_choosen_city = prediction
         # if prediction == self.correct_city:
         #     self.model_guess_correct = True
         #     self.model_score += 1
@@ -91,20 +99,26 @@ class Game:
     
         if not self.model_answered and self.time_left <= ROUND_TIME - 1:
             self.model_answered = True
+            self.model_choosen_city = self.city_options[0]  # 假設模型總是選擇第一個選項
             if self.correct_city == self.city_options[0]:  # 模型選擇第一個選項
                 self.model_guess_correct = True
                 self.model_score += 1
                 self.model_points_display = f"+{1}"
+            else:
+                self.model_points_display = f"+{0}"
 
             self.model_points_display_timer = pygame.time.get_ticks()
 
     def update(self):
+        if self.show_start_screen:
+            return
         if self.show_round_start_screen:
             # 檢查是否已過2秒的回合顯示時間
             if pygame.time.get_ticks() - self.round_start_timer >= 2000:
                 self.show_round_start_screen = False  # 停止顯示回合開始畫面
                 self.player_guess_correct = False
                 self.model_guess_correct = False
+                self.player_answered = False  # 在進入下一回合時重置玩家回答狀態
         elif self.show_result_screen:
             # 顯示結果畫面3秒鐘後再進入下一回合
             if pygame.time.get_ticks() - self.result_screen_timer >= 3000:
@@ -138,13 +152,16 @@ class Game:
                     self.model_points_display = ""
                     self.model_points_display_timer = None
 
+    ### render()
     def render(self):
         # 渲染背景
         self.window.fill((255, 255, 255))
-        if self.show_round_start_screen:
+        if self.show_start_screen:
+            self.render_start_screen()
+        elif self.show_round_start_screen:
             # 顯示回合開始畫面
             # 創建較大的字體對象
-            large_font = pygame.font.SysFont(None, 72)  # 新的字體大小
+            large_font = pygame.font.SysFont(None, 100)  # 新的字體大小
             round_text = large_font.render(f"Round {self.current_round}", True, (0, 0, 0))  # 黑字顯示當前回合
             self.window.blit(round_text, (WINDOW_WIDTH // 2 - round_text.get_width() // 2, WINDOW_HEIGHT // 2 - round_text.get_height() // 2))
         elif self.show_result_screen:
@@ -157,20 +174,58 @@ class Game:
         result_text = "Result: "
         user_result = "Correct!" if self.player_guess_correct else "Wrong!"
         model_result = "Correct!" if self.model_guess_correct else "Wrong!"
-        #顯示正確答案
+        # 顯示正確答案
         correct_text = f"Correct Answer: {self.correct_city}"
 
+        # 顯示玩家的猜測城市名稱
+        user_guess_text = self.font.render(f"User Guess: {self.player_choosen_city}", True, (0, 0, 0))
+        self.window.blit(user_guess_text, (WINDOW_WIDTH // 4 - user_guess_text.get_width() // 2, WINDOW_HEIGHT // 2 - 180))
+
         # 顯示玩家結果
-        user_result_text = self.font.render(f"User: {user_result}", True, (0, 0, 0))
+        if self.player_answered:
+            user_result_text = self.font.render(f"User: {user_result}", True, (0, 0, 0))
+        else:
+            user_result_text = self.font.render("User: No Guess", True, (0, 0, 0))
         self.window.blit(user_result_text, (WINDOW_WIDTH // 4 - user_result_text.get_width() // 2, WINDOW_HEIGHT // 2 - 150))
+
+        # 顯示模型的猜測城市名稱
+        model_guess_text = self.font.render(f"Model Guess: {self.model_choosen_city}", True, (0, 0, 0))
+        self.window.blit(model_guess_text, (3 * WINDOW_WIDTH // 4 - model_guess_text.get_width() // 2, WINDOW_HEIGHT // 2 - 180))
 
         # 顯示模型結果
         model_result_text = self.font.render(f"Model: {model_result}", True, (0, 0, 0))
         self.window.blit(model_result_text, (3 * WINDOW_WIDTH // 4 - model_result_text.get_width() // 2, WINDOW_HEIGHT // 2 - 150))
 
+        # 載入圖片
+        hehe_image = pygame.image.load("assets/images/hehe.jpg")
+        not_hehe_image = pygame.image.load("assets/images/not hehe.jpg")
+
+        # 調整圖片大小（如果需要）
+        # hehe_image = pygame.transform.scale(hehe_image, (100, 100))
+        # not_hehe_image = pygame.transform.scale(not_hehe_image, (100, 100))
+
+        # 顯示圖片：將圖片放置在玩家和模型結果文字的下方
+        user_image_x = WINDOW_WIDTH // 4 - hehe_image.get_width() // 2
+        user_image_y = WINDOW_HEIGHT // 2 - 110  # 調整 y 座標以便圖片顯示在文字下方
+        model_image_x = 3 * WINDOW_WIDTH // 4 - not_hehe_image.get_width() // 2
+        model_image_y = WINDOW_HEIGHT // 2 - 110
+
+        # 根據玩家和模型的結果顯示對應的圖片
+        if self.player_guess_correct:
+            self.window.blit(hehe_image, (user_image_x, user_image_y))
+        else:
+            self.window.blit(not_hehe_image, (user_image_x, user_image_y))
+
+        if self.model_guess_correct:
+            self.window.blit(hehe_image, (model_image_x, model_image_y))
+        else:
+            self.window.blit(not_hehe_image, (model_image_x, model_image_y))
+
         # 顯示正確答案在正中間
         correct_text = self.font.render(correct_text, True, (0, 0, 0))
         self.window.blit(correct_text, (WINDOW_WIDTH // 2 - correct_text.get_width() // 2, WINDOW_HEIGHT // 2 + 100))
+
+
 
     def render_game_screen(self):
         # 計算圖片的擺放位置，確保圖片在窗口範圍內
@@ -236,7 +291,7 @@ class Game:
         pygame.draw.rect(self.window, (209, 221, 219), (bar_x_model, WINDOW_HEIGHT - bar_height - bottom_height, bar_width, bar_height), border_radius=5)
         pygame.draw.rect(self.window, (29, 106, 150), (bar_x_model, WINDOW_HEIGHT - model_bar_height - bottom_height, bar_width, model_bar_height), border_radius=5)
 
-        # 渲染選項按鈕
+        # 渲染選項按鈕（使用相同的開始按鈕樣式）
         button_width = 400
         button_height = 35
         button_spacing = 10
@@ -250,22 +305,45 @@ class Game:
             button_y = button_start_y + i * (button_height + button_spacing)
             button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
 
-            # 檢查是否為選中的按鈕
-            if self.player_choosen_city == city:
-                pygame.draw.rect(self.window, (170, 170, 170), button_rect, border_radius=10)  # 選中後顏色加深
+            # 確認是否為選中的按鈕或滑鼠懸停
+            if (self.player_choosen_city == city) & self.player_answered:
+                button_color = (170, 170, 170)  # 選中按鈕顏色
             elif button_rect.collidepoint(mouse_x, mouse_y):
-                pygame.draw.rect(self.window, (170, 170, 170), button_rect, border_radius=10)  # 滑鼠位於按鈕上方時顏色
+                button_color = (170, 170, 170)  # 滑鼠懸停顏色
             else:
-                pygame.draw.rect(self.window, (200, 200, 200), button_rect, border_radius=10)  # 默認顏色
+                button_color = (200, 200, 200)  # 默認按鈕顏色
 
-            pygame.draw.rect(self.window, (150, 150, 150), button_rect, 3, border_radius=10)
-            text = self.font.render(city, True, (0, 0, 0))
+            # 畫出按鈕
+            pygame.draw.rect(self.window, button_color, button_rect, border_radius=10)
+            text = self.font.render(city, True, (0, 0, 0))  # 統一字體顏色為白色
             self.window.blit(text, (button_x + (button_width - text.get_width()) // 2, button_y + (button_height - text.get_height()) // 2))
 
+    def render_start_screen(self):
+        # 遊戲主介面畫面
+        self.window.fill((255, 255, 255))
+        title_font = pygame.font.SysFont(None, 80)
+        title_text = title_font.render("Guess City Game", True, (0, 0, 0))
+        self.window.blit(title_text, (WINDOW_WIDTH // 2 - title_text.get_width() // 2, WINDOW_HEIGHT // 3 - 140))
 
+        # 繪製名為"title.png"的標題圖片在正中間
+        title_image = pygame.image.load("assets/images/title.png")
+        title_image = pygame.transform.scale(title_image, (350, 350))
+        self.window.blit(title_image, (WINDOW_WIDTH // 2 - title_image.get_width() // 2, WINDOW_HEIGHT // 3 - 70))   
+
+        start_button_text = self.font.render("Start", True, (255, 255, 255))
+        pygame.draw.rect(self.window, (29, 106, 150), self.start_button_rect)
+        self.window.blit(start_button_text, (
+            self.start_button_rect.x + (self.start_button_rect.width - start_button_text.get_width()) // 2,
+            self.start_button_rect.y + (self.start_button_rect.height - start_button_text.get_height()) // 2
+        ))
 
     def handle_event(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN and not self.player_answered:
+        # 處理事件
+        if self.show_start_screen:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if self.start_button_rect.collidepoint(event.pos):
+                    self.start_game()
+        elif event.type == pygame.MOUSEBUTTONDOWN and not self.player_answered:
             mouse_pos = event.pos
             for i, button in enumerate(self.buttons):
                 if button.collidepoint(mouse_pos):
