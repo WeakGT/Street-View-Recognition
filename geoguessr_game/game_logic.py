@@ -16,7 +16,7 @@ class Game:
         self.model_guess_correct = False
         self.player_choosen_city = -1
         self.correct_city = None
-        self.model = Model("path/to/your/model.pth")  # 替換模型路徑
+        self.model = Model("../code/trained_models/model-49.pth")  # 替換模型路徑
         self.load_images_and_options()
         self.font = pygame.font.SysFont(None, 36)
         self.points_display = ""
@@ -81,23 +81,23 @@ class Game:
 
     def handle_prediction_choice(self):
         # # 將圖片轉換為模型所需的格式並進行預測
-        # images_tensor = self.convert_images_to_tensor(self.images)
-        # prediction = self.model.predict(images_tensor)
+        images_tensor = self.convert_images_to_tensor(self.images)
+        prediction = self.model.predict(images_tensor)
         # # 假設模型正確，計算模型的分數
-        # if prediction == self.correct_city:
-        #     self.model_guess_correct = True
-        #     self.model_score += 1
-        #     self.model_points_display = f"+{1}"
-        # return prediction
+        if prediction == self.correct_city:
+            self.model_guess_correct = True
+            self.model_score += 1
+            self.model_points_display = f"+{1}"
+        return prediction
     
-        if not self.model_answered and self.time_left <= ROUND_TIME - 1:
-            self.model_answered = True
-            if self.correct_city == self.city_options[0]:  # 模型選擇第一個選項
-                self.model_guess_correct = True
-                self.model_score += 1
-                self.model_points_display = f"+{1}"
+        # if not self.model_answered and self.time_left <= ROUND_TIME - 1:
+        #     self.model_answered = True
+        #     if self.correct_city == self.city_options[0]:  # 模型選擇第一個選項
+        #         self.model_guess_correct = True
+        #         self.model_score += 1
+        #         self.model_points_display = f"+{1}"
 
-            self.model_points_display_timer = pygame.time.get_ticks()
+        #     self.model_points_display_timer = pygame.time.get_ticks()
 
     def update(self):
         if self.show_round_start_screen:

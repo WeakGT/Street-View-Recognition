@@ -5,6 +5,11 @@ import pandas as pd
 import torch
 from torchvision import transforms
 
+country_list = ['United States', 'Australia', 'Thailand', 'Kenya',
+                             'South Africa', 'India', 'Canada', 'Finland', 
+                             'France', 'New Zealand', 'Singapore', 'Japan', 
+                             'Germany']
+
 class StackedImageDataset(Dataset):
     def __init__(self, root_dir, transform=None):
         self.root_dir = root_dir
@@ -67,10 +72,6 @@ class SingleImageDataset(Dataset):
         #                   'Kaohsiung', 'Pingtung', 'Yilan', 'Hualien',
         #                   'Taitung', 'Penghu', 'Green Island', 'Orchid Island',
         #                   'Kinmen Country', 'Matsu', 'Lienchiang']
-        self.country_list = ['United States', 'Australia', 'Thailand', 'Kenya',
-                             'South Africa', 'India', 'Canada', 'Finland', 
-                             'France', 'New Zealand', 'Singapore', 'Japan', 
-                             'Germany'] 
 
     def _group_images(self):
         # groups = {}
@@ -109,5 +110,5 @@ class SingleImageDataset(Dataset):
         # city_lat = self.label_df.iloc[index]['latitude']
         # city_long = self.label_df.iloc[index]['longitude']
         country = self.label_df['country'][index]
-        country_code = self.country_list.index(country)
+        country_code = country_list.index(country)
         return torch.tensor(country_code)
