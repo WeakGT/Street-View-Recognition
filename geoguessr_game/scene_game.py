@@ -1,4 +1,6 @@
 import pygame
+import pandas as pd
+import random
 import time
 from config import *
 from base_scene import Scene
@@ -23,9 +25,11 @@ class GameScene(Scene):
         self.model_score_feedback_timer = None
         # 模型
         # self.model = Model("path/to/your/model.pth")  # 替換模型路徑
-        # 畫面
-        self.load_images_and_options()
         self.font = pygame.font.SysFont(None, 40)
+        country_list = ['United States', 'Australia', 'Thailand', 'Kenya',
+                             'South Africa', 'India', 'Canada', 'Finland', 
+                             'France', 'New Zealand', 'Singapore', 'Japan', 
+                             'Germany']
 
     def on_enter(self):
         self.start_time = time.time()  # 每次進入場景重置開始時間
@@ -36,14 +40,32 @@ class GameScene(Scene):
         self.model_choosen_city = None
         self.player_score_feedback_timer = None
         self.model_score_feedback_timer = None
+        self.load_images_and_options()
 
     def load_images_and_options(self):
+        # load the pictures in data/256x256_global
+        # step 1: from data/256x256_global/picture_coords.csv, choose an random 'index' and its corresponding 'image' and 'country'
+        csv_path = "data/256x256_global/picture_coords.csv"
+        picture_coords = pd.read_csv(csv_path)
+        random_row = picture_coords.sample()  # 隨機選擇一行
+        image_path = random_row['image'].values[0]  # 獲取圖片路徑
+        country = random_row['country'].values[0]  # 獲取國家名稱
+        # step 2: load the image from data/256x256_global/ + 'image' path
+        full_image_path = f"data/256x256_global/{image_path}"
         # 載入並縮放圖片
         self.images = [
-            pygame.transform.scale(pygame.image.load("assets/images/image1.jpg"), (IMAGE_SIZE[0], IMAGE_SIZE[1]))
+            pygame.transform.scale(pygame.image.load(full_image_path), (IMAGE_SIZE[0], IMAGE_SIZE[1]))
         ]
-        self.city_options = ["City1", "City2", "City3", "City4"]
-        self.correct_city = self.city_options[0]  # 正確答案假設為第一個選項
+        # step 3: choose 4 random country from country_list
+        # note: the correct answer should be in one of the 4 options
+        self.city_options = [country]
+        while len(self.city_options) < 4:
+            random_country = country_list[random.randint(0, len(country_list) - 1)]
+            if random_country not in self.city_options:
+                self.city_options.append(random_country)
+        random.shuffle(self.city_options)
+        #self.city_options = ["City1", "City2", "City3", "City4"]
+        self.correct_city = country
         print("Correct city:", self.correct_city)
 
     def handle_player_choice(self, choice):
@@ -125,7 +147,7 @@ class GameScene(Scene):
         screen.blit(title_text, title_text_rect)
 
         # 顯示提示文字
-        hint_text = self.font.render("Guess the city based on the street view image", True, (0, 0, 0))
+        hint_text = self.font.render("Guess the country based on the street view image", True, (0, 0, 0))
         screen.blit(hint_text, (WINDOW_WIDTH // 2 - hint_text.get_width() // 2, image_y + IMAGE_SIZE[1] + 20))
 
         # 設置按鈕位置

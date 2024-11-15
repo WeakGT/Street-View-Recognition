@@ -1,5 +1,10 @@
 # Machine-Learning-Final-Project
 
+## Run Game
+1. cd ./Machine-Learning-Final-Project
+2. python ./geoguessr_game/main.py
+
+---
 ## Building env for training
 1. Create a virtual environment
 2. `pip install -r requirements.txt`

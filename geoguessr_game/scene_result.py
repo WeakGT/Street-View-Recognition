@@ -60,7 +60,7 @@ class ResultScene(Scene):
         screen.blit(model_guess_render, (WINDOW_WIDTH // 2 - model_guess_render.get_width() // 2 + 350, 310))
 
         # 顯示正確城市名稱
-        correct_city_text = f"City: {self.correct_city}"
+        correct_city_text = f"Country: {self.correct_city}"
         correct_city_render = self.font.render(correct_city_text, True, (0, 0, 0))
         screen.blit(correct_city_render, (WINDOW_WIDTH // 2 - correct_city_render.get_width() // 2, WINDOW_HEIGHT // 2 + 160))
 
@@ -79,7 +79,10 @@ class ResultScene(Scene):
             button_color = (200, 200, 200)  # 預設顏色
 
         pygame.draw.rect(screen, button_color, self.next_button_rect, border_radius=10)
-        button_text = self.button_font.render("Next Round", True, (0, 0, 0))
+        if self.manager.round_count < NUM_ROUNDS:
+            button_text = self.button_font.render("Next Round", True, (0, 0, 0))
+        else:
+            button_text = self.button_font.render("Check Result", True, (0, 0, 0))
         screen.blit(
             button_text,
             (

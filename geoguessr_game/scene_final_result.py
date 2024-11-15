@@ -1,13 +1,14 @@
 import pygame
 from base_scene import Scene
 from config import *
+
 class FinalResultScene(Scene):
     def __init__(self, manager):
         super().__init__(manager)
         # 載入贏或輸的圖片
-        self.win_image = pygame.image.load("assets/images/win.jpg")
-        self.lose_image = pygame.image.load("assets/images/lose.png")
-        self.draw_image = pygame.image.load("assets/images/draw.jpg")
+        self.win_image = pygame.image.load("geoguessr_game/assets/images/win.jpg")
+        self.lose_image = pygame.image.load("geoguessr_game/assets/images/lose.png")
+        self.draw_image = pygame.image.load("geoguessr_game/assets/images/draw.jpg")
         self.font = pygame.font.SysFont(None, 80)
         self.button_font = pygame.font.SysFont(None, 60)
         # image resize as IMAGE_SIZE
@@ -63,6 +64,6 @@ class FinalResultScene(Scene):
     def handle_events(self, events):
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if self.start_button_rect.collidepoint(event.pos):
+                if self.exit_button_rect.collidepoint(event.pos):
                     pygame.quit()  # 結束遊戲
                     exit()

@@ -21,11 +21,11 @@ class StartScene(Scene):
 
         # 顯示標題文字
         title_font = pygame.font.SysFont(None, 120)
-        title_text = title_font.render("Guess City Game", True, (0, 0, 0))
+        title_text = title_font.render("Guess Country Game", True, (0, 0, 0))
         screen.blit(title_text, (WINDOW_WIDTH // 2 - title_text.get_width() // 2, WINDOW_HEIGHT // 3 - 90))
 
         # 顯示標題圖片
-        title_image = pygame.image.load("assets/images/title.png")
+        title_image = pygame.image.load("geoguessr_game/assets/images/title.png")
         title_image = pygame.transform.scale(title_image, (605, 351))
         screen.blit(title_image, (WINDOW_WIDTH // 2 - title_image.get_width() // 2, WINDOW_HEIGHT // 3 + 40))
 
