@@ -8,7 +8,7 @@ from scene_final_result import FinalResultScene
 class SceneManager:
     def __init__(self):
         #回合數
-        self.round_count = 1
+        self.round_count = 0
         #分數
         self.user_score = 0
         self.model_score = 0

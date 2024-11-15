@@ -11,6 +11,7 @@ class RoundBeginScene(Scene):
 
     def on_enter(self):
         self.start_time = pygame.time.get_ticks()  # 每次進入場景重置開始時間
+        self.manager.round_count += 1  # 回合數加 1
 
     def update(self):
         # 檢查是否超過 3 秒，超過則進入遊戲場景

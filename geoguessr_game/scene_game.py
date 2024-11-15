@@ -34,7 +34,6 @@ class GameScene(Scene):
         self.model_answered = False
         self.player_choosen_city = None
         self.model_choosen_city = None
-        self.correct_city = None
         self.player_score_feedback_timer = None
         self.model_score_feedback_timer = None
 
@@ -45,34 +44,40 @@ class GameScene(Scene):
         ]
         self.city_options = ["City1", "City2", "City3", "City4"]
         self.correct_city = self.city_options[0]  # 正確答案假設為第一個選項
+        print("Correct city:", self.correct_city)
 
     def handle_player_choice(self, choice):
         if not self.player_answered:
             self.player_answered = True
             self.player_choosen_city = self.city_options[choice]
+            print("Player choice:", self.player_choosen_city)
             if self.player_choosen_city == self.correct_city:
-                self.manager.user_score += 1
-                self.player_score_feedback_timer = (time.time(), "+1")
+                print("Player Correct!")
             else:
-                self.player_score_feedback_timer = (time.time(), "+0")
-            self.result_timer = time.time() + 1.5
+                print("Player Wrong!")
+            self.player_score_feedback_timer = (time.time(), "The player has made a guess")
 
     def handle_prediction_choice(self):
         if not self.model_answered and self.time_left <= ROUND_TIME - 1:
             self.model_answered = True
             self.model_choosen_city = self.city_options[0]
             if self.model_choosen_city == self.correct_city:
-                self.manager.model_score += 1
-                self.model_score_feedback_timer = (time.time(), "+1")
+                print("Model Correct!")
             else:
-                self.model_score_feedback_timer = (time.time(), "+0")
+                print("Model Wrong!")
+            self.model_score_feedback_timer = (time.time(), "The model has made a guess")
 
 
     def update(self):
         elapsed_time = time.time() - self.start_time
         self.time_left = max(ROUND_TIME - int(elapsed_time), 0)
+        # 檢查玩家和模型是否都已作答，且設定 `result_timer`
+        if self.player_answered and self.model_answered and not self.result_timer:
+            self.result_timer = time.time() + 1.5
+        # 檢查是否時間已到或需要進入結果場景
         if self.time_left == 0 or (self.result_timer and time.time() >= self.result_timer):
             self.move_to_result_scene()
+        self.handle_prediction_choice()
 
     def draw(self, screen):
         screen.fill((255, 255, 255))
@@ -83,14 +88,16 @@ class GameScene(Scene):
         screen.blit(player_score_text, (320, 220))
         screen.blit(model_score_text, (320, 260))
 
-        # 顯示 "+1" 或 "+0" 標記，若在一秒內則顯示
+        # 顯示"The player has mades a guess"和"The model has mades a guess"
+        # 顏色:(66, 112, 140)
         current_time = time.time()
+        guess_font = pygame.font.SysFont(None, 30)
         if self.player_score_feedback_timer and current_time - self.player_score_feedback_timer[0] < 1:
-            feedback_text = self.font.render(self.player_score_feedback_timer[1], True, (0, 128, 0))
-            screen.blit(feedback_text, (540, 220))  # 顯示在玩家分數旁邊
+            feedback_text = guess_font.render(self.player_score_feedback_timer[1], True, (66, 112, 140))
+            screen.blit(feedback_text, (540, 225))  # 顯示在玩家分數旁邊
         if self.model_score_feedback_timer and current_time - self.model_score_feedback_timer[0] < 1:
-            feedback_text = self.font.render(self.model_score_feedback_timer[1], True, (0, 128, 0))
-            screen.blit(feedback_text, (540, 260))  # 顯示在模型分數旁邊
+            feedback_text = guess_font.render(self.model_score_feedback_timer[1], True, (66, 112, 140))
+            screen.blit(feedback_text, (540, 265))  # 顯示在模型分數旁邊
 
         # 計算圖片位置
         image_x = (WINDOW_WIDTH - IMAGE_SIZE[0]) // 2
@@ -107,7 +114,7 @@ class GameScene(Scene):
         remaining_bar_width = int(bar_width * remaining_ratio)
         bar_height = 20
         bar_x = WINDOW_WIDTH // 2 - bar_width // 2
-        bar_y = 300
+        bar_y = 310
         pygame.draw.rect(screen, (209, 237, 225), (bar_x, bar_y, bar_width, bar_height))
         pygame.draw.rect(screen, (2, 140, 106), (bar_x, bar_y, remaining_bar_width, bar_height))
 
