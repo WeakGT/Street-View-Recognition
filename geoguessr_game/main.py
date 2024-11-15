@@ -1,34 +1,31 @@
 import pygame
 import sys
-from game_logic import Game
+from scene_manager import SceneManager
 from config import *
 
 # 初始化 Pygame
 pygame.init()
+screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+clock = pygame.time.Clock()
 
-# 設置窗口
-window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-pygame.display.set_caption("Geoguessr Clone")
-
-# 主遊戲循環
+# 遊戲主迴圈
 def main():
-    game = Game(window)
-    clock = pygame.time.Clock()
-    running = True
+    manager = SceneManager()
 
-    while running:
-        for event in pygame.event.get():
+    while True:
+        events = pygame.event.get()
+        for event in events:
             if event.type == pygame.QUIT:
-                running = False
-            game.handle_event(event)
+                pygame.quit()
+                sys.exit()
 
-        game.update()
-        game.render()
+        manager.handle_events(events)
+        manager.update()
+        manager.draw(screen)
+
         pygame.display.flip()
-        clock.tick(30)  # 控制每秒幀數 (FPS)
+        clock.tick(60)
 
-    pygame.quit()
-    sys.exit()
-
+# 啟動遊戲
 if __name__ == "__main__":
     main()
