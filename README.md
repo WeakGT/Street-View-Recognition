@@ -1,5 +1,7 @@
 # Machine-Learning-Final-Project
 
+## model
+put .pth into ./model
 ## Run Game
 1. cd ./Machine-Learning-Final-Project
 2. python ./geoguessr_game/main.py
