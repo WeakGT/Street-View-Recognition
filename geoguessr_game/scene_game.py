@@ -2,9 +2,10 @@ import pygame
 import pandas as pd
 import random
 import time
+import torch
 from config import *
 from base_scene import Scene
-# from prediction import Model  # 替換成你的 AI 模型文件
+from prediction import Model # 替換成你的 AI 模型文件
 
 class GameScene(Scene):
     def __init__(self, manager):
@@ -24,7 +25,7 @@ class GameScene(Scene):
         self.player_score_feedback_timer = None
         self.model_score_feedback_timer = None
         # 模型
-        # self.model = Model("path/to/your/model.pth")  # 替換模型路徑
+        self.model = Model("model/model-49.pth")   # 替換模型路徑
         self.font = pygame.font.SysFont(None, 40)
         country_list = ['United States', 'Australia', 'Thailand', 'Kenya',
                              'South Africa', 'India', 'Canada', 'Finland', 
@@ -64,7 +65,6 @@ class GameScene(Scene):
             if random_country not in self.city_options:
                 self.city_options.append(random_country)
         random.shuffle(self.city_options)
-        #self.city_options = ["City1", "City2", "City3", "City4"]
         self.correct_city = country
         print("Correct city:", self.correct_city)
 
@@ -80,14 +80,27 @@ class GameScene(Scene):
             self.player_score_feedback_timer = (time.time(), "The player has made a guess")
 
     def handle_prediction_choice(self):
+        # # 將圖片轉換為模型所需的格式並進行預測
         if not self.model_answered and self.time_left <= ROUND_TIME - 1:
+            print("Handle prediction choice")
+            images_tensor = self.convert_images_to_tensor(self.images)
+            self.model_choosen_city = self.model.predict(images_tensor, self.city_options)
+            print("Model choice:", self.model_choosen_city)
             self.model_answered = True
-            self.model_choosen_city = self.city_options[0]
             if self.model_choosen_city == self.correct_city:
                 print("Model Correct!")
             else:
                 print("Model Wrong!")
             self.model_score_feedback_timer = (time.time(), "The model has made a guess")
+
+        #if not self.model_answered and self.time_left <= ROUND_TIME - 1:
+        #    self.model_answered = True
+        #    self.model_choosen_city = self.city_options[0]
+        #    if self.model_choosen_city == self.correct_city:
+        #        print("Model Correct!")
+        #    else:
+        #        print("Model Wrong!")
+        #    self.model_score_feedback_timer = (time.time(), "The model has made a guess")
 
 
     def update(self):
@@ -206,3 +219,16 @@ class GameScene(Scene):
             "model_choice": self.model_choosen_city,
         }
         self.manager.go_to("result")
+
+    def convert_images_to_tensor(self, images):
+        # 將 Pygame 圖片轉換為 Tensor 格式
+        # 只有一張圖片，所以直接轉換即可
+        #image_tensor = pygame.surfarray.array3d(images[0])
+        #image_tensor = torch.from_numpy(image_tensor).permute(2, 0, 1).float() / 255.0
+        #return image_tensor.unsqueeze(0)
+        image_tensors = []
+        for img in images:
+            img_array = pygame.surfarray.array3d(img)  # 將圖片轉換為 numpy 陣列
+            img_tensor = torch.from_numpy(img_array).permute(2, 0, 1).float() / 255.0
+            image_tensors.append(img_tensor)
+        return torch.stack(image_tensors)  # 將多張圖片堆疊為一個 Tensor

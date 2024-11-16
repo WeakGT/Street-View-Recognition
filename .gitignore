@@ -6,3 +6,6 @@
 
 ## Virtual Environment
 **/myenv/
+
+# 忽略所有 model 資料夾下的 .pth 檔案
+model/*.pth
