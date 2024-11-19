@@ -9,6 +9,9 @@ python get_images_random.py --output 640x640 --icount {your quota left} --key {y
 deactivate
 '''
 
+
+# code starts here
+'''
 import requests         # HTTP req for API
 import os               # filesys
 import csv
@@ -119,3 +122,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+'''
