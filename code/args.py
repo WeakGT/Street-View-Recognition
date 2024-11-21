@@ -23,7 +23,7 @@ class Args:
     val_ratio: float = 0.2
     epochs: int = 50
     batch_size: int = 128
-    start_from_last: bool = True
+    start_from_last: bool = False
     load_data_workers: int = 8
     checkpoint_step: int = 20
     alpha: float = 0.1

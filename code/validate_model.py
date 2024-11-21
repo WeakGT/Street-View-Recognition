@@ -9,7 +9,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-checkpoint = torch.load('./trained_models/model-1024-90.pth')
+checkpoint = torch.load('./trained_models/11-20-19-32/model-49.pth')
 model = StreetViewNet().to(device)
 model.load_state_dict(checkpoint['model_state_dict'])
 model = model.eval()

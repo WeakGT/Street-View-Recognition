@@ -7,8 +7,7 @@ from torchvision import transforms
 
 country_list = ['United States', 'Australia', 'Thailand', 'Kenya',
                              'South Africa', 'India', 'Canada', 'Finland', 
-                             'France', 'New Zealand', 'Singapore', 'Japan', 
-                             'Germany']
+                             'France', 'New Zealand']
 
 class StackedImageDataset(Dataset):
     def __init__(self, root_dir, transform=None):

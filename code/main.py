@@ -11,7 +11,7 @@ from torcheval.metrics.classification import MulticlassF1Score
 from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 from datetime import datetime
-from stack_image import StackedImageDataset, SingleImageDataset
+from stack_image import StackedImageDataset, SingleImageDataset, country_list
 from model import StreetViewNet
 from args import args
 
@@ -49,7 +49,7 @@ standard_transform = transforms.Compose([
 generator = torch.Generator().manual_seed(args.random_seed)
 train_dataset = SingleImageDataset(data_path, transform=transform, is_train=True)
 val_dataset = SingleImageDataset(data_path, transform=standard_transform, is_train=False)
-num_class = len(train_dataset.country_list)
+num_class = len(country_list)
 
 model = StreetViewNet(num_class=num_class).to(device)
 # Calculated the data weights first
@@ -67,7 +67,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
 start_epoch = 0
 if args.start_from_last:
     try:
-        checkpoint = torch.load('./trained_models/11-02-00-27/model-19.pth')
+        checkpoint = torch.load('./trained_models/11-02-00-39/model-49.pth')
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         start_epoch = checkpoint['epoch'] + 1
