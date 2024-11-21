@@ -2,38 +2,45 @@ import torch
 import torchvision.transforms as transforms
 import sys
 import os
+from PIL import Image
 
 # 確保將專案根目錄加入 sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+project_root = os.path.join(os.path.dirname(__file__), '..')
+sys.path.append(project_root)
 from model.model import StreetViewNet
 
 '''
 import model and make prediction here
 '''
 country_list = ['United States', 'Australia', 'Thailand', 'Kenya',
-                             'South Africa', 'India', 'Canada', 'Finland', 
-                             'France', 'New Zealand', 'Singapore', 'Japan', 
-                             'Germany']
+                'South Africa', 'India', 'Canada', 'Finland', 
+                'France', 'New Zealand']
 
 class Model:
     def __init__(self, model_path):
-        checkpoint = torch.load(model_path, map_location='cpu')
+        checkpoint = torch.load(os.path.join(project_root, model_path), map_location='cpu')
         self.model = StreetViewNet(len(country_list))
         self.model.load_state_dict(checkpoint['model_state_dict'])
         self.model.eval()
-        self.resize_transform = transforms.Resize((224, 224))
+        self.resize_transform = transforms.Compose([
+            transforms.Resize((224, 224)),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        ])
 
-    def predict(self, images, country_options):
+    def predict(self, image_path, country_options):
         # 假設 images 是一張圖片的 Tensor
         # ressize to 224x224
         # 從 city_options 中挑選出最有可能的城市
-        resize_images = []
-        for image in images:
-            resize_images.append(self.resize_transform(image))
-        images = torch.stack(resize_images)
+        # resize_images = []
+        # for image in images:
+        image = Image.open(image_path).convert('RGB')
+        image = self.resize_transform(image)
+        image = image.unsqueeze(0)
+        # images = torch.stack(resize_images)
 
         with torch.no_grad():
-            output = self.model(images)
+            output = self.model(image)
             output = torch.mean(output, dim=0)
             # sort the output in descending order
             print(output)
@@ -43,10 +50,10 @@ class Model:
             while i < len(output):
                 target = output[i]
                 if country_list[target] in country_options:
+                    predicted_city = country_list[target]
                     break
                 else:
                     i += 1
-            predicted_city = country_list[target]
 
             #output = torch.argmax(output).item()
             #predicted_city = country_list[output]

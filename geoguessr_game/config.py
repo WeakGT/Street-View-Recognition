@@ -5,6 +5,5 @@ ROUND_TIME = 20  # 每回合 20 秒
 NUM_ROUNDS = 6  # 總共 10 回合
 
 country_list = ['United States', 'Australia', 'Thailand', 'Kenya',
-                             'South Africa', 'India', 'Canada', 'Finland', 
-                             'France', 'New Zealand', 'Singapore', 'Japan', 
-                             'Germany']
+                'South Africa', 'India', 'Canada', 'Finland', 
+                'France', 'New Zealand']

@@ -25,12 +25,12 @@ class GameScene(Scene):
         self.player_score_feedback_timer = None
         self.model_score_feedback_timer = None
         # 模型
-        self.model = Model("model/model-49.pth")   # 替換模型路徑
+        self.model = Model("model/model-19-1121.pth")   # 替換模型路徑
         self.font = pygame.font.SysFont(None, 40)
         country_list = ['United States', 'Australia', 'Thailand', 'Kenya',
-                             'South Africa', 'India', 'Canada', 'Finland', 
-                             'France', 'New Zealand', 'Singapore', 'Japan', 
-                             'Germany']
+                        'South Africa', 'India', 'Canada', 'Finland', 
+                        'France', 'New Zealand']
+        self.random_row = None
 
     def on_enter(self):
         self.start_time = time.time()  # 每次進入場景重置開始時間
@@ -48,9 +48,9 @@ class GameScene(Scene):
         # step 1: from data/256x256_global/picture_coords.csv, choose an random 'index' and its corresponding 'image' and 'country'
         csv_path = "data/256x256_global/picture_coords.csv"
         picture_coords = pd.read_csv(csv_path)
-        random_row = picture_coords.sample()  # 隨機選擇一行
-        image_path = random_row['image'].values[0]  # 獲取圖片路徑
-        country = random_row['country'].values[0]  # 獲取國家名稱
+        self.random_row = picture_coords.sample()  # 隨機選擇一行
+        image_path = self.random_row['image'].values[0]  # 獲取圖片路徑
+        country = self.random_row['country'].values[0]  # 獲取國家名稱
         # step 2: load the image from data/256x256_global/ + 'image' path
         full_image_path = f"data/256x256_global/{image_path}"
         # 載入並縮放圖片
@@ -83,8 +83,8 @@ class GameScene(Scene):
         # # 將圖片轉換為模型所需的格式並進行預測
         if not self.model_answered and self.time_left <= ROUND_TIME - 1:
             print("Handle prediction choice")
-            images_tensor = self.convert_images_to_tensor(self.images)
-            self.model_choosen_city = self.model.predict(images_tensor, self.city_options)
+            # images_tensor = self.convert_images_to_tensor(self.images)
+            self.model_choosen_city = self.model.predict(f"data/256x256_global/{self.random_row['image'].values[0]}", self.city_options)
             print("Model choice:", self.model_choosen_city)
             self.model_answered = True
             if self.model_choosen_city == self.correct_city:
