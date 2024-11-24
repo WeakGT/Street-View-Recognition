@@ -33,6 +33,7 @@ class SceneManager:
             "final_result": FinalResultScene(self)
         }
         self.current_scene = self.scenes["start"]
+        self.model_probabilities = None
 
     def go_to(self, scene_name):
         self.current_scene = self.scenes[scene_name]

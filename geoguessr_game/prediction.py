@@ -36,19 +36,15 @@ class Model:
         with torch.no_grad():
             output = self.model(image)
             output = torch.mean(output, dim=0)
-            # sort the output in descending order
             print(output)
-            output = torch.argsort(output, descending=True)
-            print(output)   
-            i = 0
-            while i < len(output):
-                target = output[i]
-                if country_list[target] in country_options:
-                    predicted_city = country_list[target]
-                    break
-                else:
-                    i += 1
+            probabilities = torch.nn.functional.softmax(output, dim=0)
+            print(probabilities)
+            predicted_probabilities = {country: probabilities[country_list.index(country)].item()
+                                   for country in country_options}
+            # 按機率排序並選出最高的選項
+            sorted_probabilities = sorted(predicted_probabilities.items(), key=lambda x: x[1], reverse=True)
+            predicted_city = sorted_probabilities[0][0]  # 機率最高的選項
+            print(predicted_probabilities)
 
-            #output = torch.argmax(output).item()
-            #predicted_city = country_list[output]
-        return predicted_city
+        # 返回預測結果和完整的機率分布
+        return predicted_city, predicted_probabilities

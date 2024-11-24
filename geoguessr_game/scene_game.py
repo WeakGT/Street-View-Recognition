@@ -81,7 +81,9 @@ class GameScene(Scene):
         if not self.model_answered and self.time_left <= ROUND_TIME - 1:
             print("Handle prediction choice")
             # images_tensor = self.convert_images_to_tensor(self.images)
-            self.model_choosen_city = self.model.predict(f"data/256x256_global/{self.random_row['image'].values[0]}", self.city_options)
+            prediction, probabilities = self.model.predict(f"data/256x256_global/{self.random_row['image'].values[0]}", self.city_options)
+            self.model_choosen_city = prediction
+            self.manager.model_probabilities = probabilities
             print("Model choice:", self.model_choosen_city)
             self.model_answered = True
             if self.model_choosen_city == self.correct_city:

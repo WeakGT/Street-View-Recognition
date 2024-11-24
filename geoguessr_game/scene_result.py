@@ -51,33 +51,65 @@ class ResultScene(Scene):
         screen.fill((255, 255, 255))
 
         # 顯示玩家的猜測結果是否正確
+        model_probabilities = self.manager.model_probabilities
         player_result_text = f"Player: {'Correct' if self.player_correct else 'Incorrect'}"
         player_result_color = (167, 201, 87) if self.player_correct else (188, 71, 73)
         player_result_render = self.font.render(player_result_text, True, player_result_color)
-        screen.blit(player_result_render, (WINDOW_WIDTH // 4 - player_result_render.get_width() // 2, WINDOW_HEIGHT // 2 - 100))
+        screen.blit(player_result_render, (WINDOW_WIDTH // 4 - player_result_render.get_width() // 2, WINDOW_HEIGHT // 2 - 300))
         player_guess_text = f"Player's Guess: {self.player_choice}"
         player_guess_render = self.font.render(player_guess_text, True, (0, 0, 0))
-        screen.blit(player_guess_render, (WINDOW_WIDTH // 4 - player_guess_render.get_width() // 2, WINDOW_HEIGHT // 2 - 50))
+        screen.blit(player_guess_render, (WINDOW_WIDTH // 4 - player_guess_render.get_width() // 2, WINDOW_HEIGHT // 2 - 250))
 
         # 顯示模型的猜測結果是否正確
         model_result_text = f"Model: {'Correct' if self.model_correct else 'Incorrect'}"
         model_result_color = (167, 201, 87) if self.model_correct else (188, 71, 73)
         model_result_render = self.font.render(model_result_text, True, model_result_color)
-        screen.blit(model_result_render, (WINDOW_WIDTH * 3 // 4 - model_result_render.get_width() // 2, WINDOW_HEIGHT // 2 - 100))
+        screen.blit(model_result_render, (WINDOW_WIDTH * 3 // 4 - model_result_render.get_width() // 2, WINDOW_HEIGHT // 2 - 300))
         model_guess_text = f"Model's Guess: {self.model_choice}"
         model_guess_render = self.font.render(model_guess_text, True, (0, 0, 0))
-        screen.blit(model_guess_render, (WINDOW_WIDTH * 3 // 4 - model_guess_render.get_width() // 2, WINDOW_HEIGHT // 2 - 50))
+        screen.blit(model_guess_render, (WINDOW_WIDTH * 3 // 4 - model_guess_render.get_width() // 2, WINDOW_HEIGHT // 2 - 250))
+
+        # 條形圖的屬性
+        bar_width = 100  # 每個條形的寬度
+        bar_spacing = 50  # 條形之間的間距
+        max_bar_height = 300  # 條形的最大高度
+        bar_x_start = (WINDOW_WIDTH - (len(model_probabilities) * (bar_width + bar_spacing) - bar_spacing)) // 2
+        bar_y_base = WINDOW_HEIGHT // 2 + 160  # 條形圖的基準線
+
+        # 顯示標題
+        title_font = pygame.font.SysFont(None, 36)
+        title_text = title_font.render("Model Prediction Probabilities", True, (0, 0, 0))
+        screen.blit(title_text, (WINDOW_WIDTH // 2 - title_text.get_width() // 2, WINDOW_HEIGHT // 2 - 160))
+
+        # 繪製條形圖
+        bar_font = pygame.font.SysFont(None, 28)
+        for idx, (country, probability) in enumerate(model_probabilities.items()):
+            # 計算條形位置與高度
+            bar_height = int(probability * max_bar_height)  # 高度與機率成比例
+            bar_x = bar_x_start + idx * (bar_width + bar_spacing)
+            bar_y = bar_y_base - bar_height
+
+            # 繪製條形
+            pygame.draw.rect(screen, (66, 135, 245), (bar_x, bar_y, bar_width, bar_height))
+
+            # 在條形上方顯示機率數字
+            probability_text = bar_font.render(f"{probability * 100:.1f}%", True, (0, 0, 0))
+            screen.blit(probability_text, (bar_x + (bar_width - probability_text.get_width()) // 2, bar_y - 25))
+
+            # 在條形下方顯示選項名稱
+            country_text = bar_font.render(country, True, (0, 0, 0))
+            screen.blit(country_text, (bar_x + (bar_width - country_text.get_width()) // 2, bar_y_base + 10))
 
         # 顯示正確城市名稱
         correct_city_text = f"Country: {self.correct_city}"
         correct_city_render = self.font.render(correct_city_text, True, (0, 0, 0))
-        screen.blit(correct_city_render, (WINDOW_WIDTH // 2 - correct_city_render.get_width() // 2, WINDOW_HEIGHT // 2 + 160))
+        screen.blit(correct_city_render, (WINDOW_WIDTH // 2 - correct_city_render.get_width() // 2, WINDOW_HEIGHT // 2 + 220))
 
         # 設置 "Next Round" 按鈕
         button_width = 320
         button_height = 60
         button_x = (WINDOW_WIDTH - button_width) // 2
-        button_y = WINDOW_HEIGHT // 2 + 200  # 按鈕位於底部
+        button_y = WINDOW_HEIGHT // 2 + 260  # 按鈕位於底部
         self.next_button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
 
         # 判斷滑鼠是否懸停在按鈕上
