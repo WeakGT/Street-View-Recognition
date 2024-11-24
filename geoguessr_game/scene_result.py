@@ -6,9 +6,9 @@ from config import *
 class ResultScene(Scene):
     def __init__(self, manager):
         super().__init__(manager)
-        self.font = pygame.font.SysFont(None, 36)
-        self.button_font = pygame.font.SysFont(None, 36)
-        self.next_button_rect = None
+        self.font = pygame.font.Font(FONT_PATHS["default"], 32)
+        self.alpha = 0  # 當前透明度
+        self.fade_in = True  # 是否正在漸入
 
     def on_enter(self):
         # 接收來自 GameScene 的結果資料
@@ -36,17 +36,23 @@ class ResultScene(Scene):
     def handle_events(self, events):
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_pos = event.pos
-                if self.next_button_rect and self.next_button_rect.collidepoint(mouse_pos):
-                    # 點擊按鈕後切換到下一回合
-                    self.audio_manager.play_sound("click")
-                    if self.manager.round_count < NUM_ROUNDS:
-                        self.manager.go_to("round_begin")
-                    else:
-                        self.manager.go_to("final_result")
+                self.audio_manager.play_sound("click")
+                if self.manager.round_count < NUM_ROUNDS:
+                    self.manager.go_to("round_begin")
+                else:
+                    self.manager.go_to("final_result")
 
     def update(self):
-        pass  # 此畫面不需要更新內容
+        if self.fade_in:
+            self.alpha += 10
+            if self.alpha >= 255:
+                self.alpha = 255
+                self.fade_in = False
+        else:
+            self.alpha -= 10
+            if self.alpha <= 0:
+                self.alpha = 0
+                self.fade_in = True
 
     def draw(self, screen):
         screen.fill((255, 255, 255))
@@ -78,12 +84,12 @@ class ResultScene(Scene):
         bar_y_base = WINDOW_HEIGHT // 2 + 160  # 條形圖的基準線
 
         # 顯示標題
-        title_font = pygame.font.SysFont(None, 36)
+        title_font = pygame.font.Font(FONT_PATHS["default"], 32)
         title_text = title_font.render("Model Prediction Probabilities", True, (0, 0, 0))
         screen.blit(title_text, (WINDOW_WIDTH // 2 - title_text.get_width() // 2, WINDOW_HEIGHT // 2 - 160))
 
         # 繪製條形圖
-        bar_font = pygame.font.SysFont(None, 28)
+        bar_font = pygame.font.Font(FONT_PATHS["default"], 20)
         for idx, (country, probability) in enumerate(model_probabilities.items()):
             # 計算條形位置與高度
             bar_height = int(probability * max_bar_height)  # 高度與機率成比例
@@ -95,7 +101,7 @@ class ResultScene(Scene):
 
             # 在條形上方顯示機率數字
             probability_text = bar_font.render(f"{probability * 100:.1f}%", True, (0, 0, 0))
-            screen.blit(probability_text, (bar_x + (bar_width - probability_text.get_width()) // 2, bar_y - 25))
+            screen.blit(probability_text, (bar_x + (bar_width - probability_text.get_width()) // 2, bar_y - 35))
 
             # 在條形下方顯示選項名稱
             country_text = bar_font.render(country, True, (0, 0, 0))
@@ -106,29 +112,8 @@ class ResultScene(Scene):
         correct_city_render = self.font.render(correct_city_text, True, (0, 0, 0))
         screen.blit(correct_city_render, (WINDOW_WIDTH // 2 - correct_city_render.get_width() // 2, WINDOW_HEIGHT // 2 + 220))
 
-        # 設置 "Next Round" 按鈕
-        button_width = 320
-        button_height = 60
-        button_x = (WINDOW_WIDTH - button_width) // 2
-        button_y = WINDOW_HEIGHT // 2 + 260  # 按鈕位於底部
-        self.next_button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
-
-        # 判斷滑鼠是否懸停在按鈕上
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        if self.next_button_rect.collidepoint(mouse_x, mouse_y):
-            button_color = (170, 170, 170)  # 滑鼠懸停顏色
-        else:
-            button_color = (200, 200, 200)  # 預設顏色
-
-        pygame.draw.rect(screen, button_color, self.next_button_rect, border_radius=10)
-        if self.manager.round_count < NUM_ROUNDS:
-            button_text = self.button_font.render("Next Round", True, (0, 0, 0))
-        else:
-            button_text = self.button_font.render("Check Result", True, (0, 0, 0))
-        screen.blit(
-            button_text,
-            (
-                button_x + (button_width - button_text.get_width()) // 2,
-                button_y + (button_height - button_text.get_height()) // 2,
-            ),
-        )
+        next_round_text = "Click to Next Round" if self.manager.round_count < NUM_ROUNDS else "Click to Check Result"
+        next_round_font = pygame.font.SysFont(None, 48)
+        text_render = next_round_font.render(next_round_text, True, (0, 0, 0))
+        text_render.set_alpha(self.alpha)
+        screen.blit(text_render, (WINDOW_WIDTH // 2 - text_render.get_width() // 2, WINDOW_HEIGHT // 2 + 280))

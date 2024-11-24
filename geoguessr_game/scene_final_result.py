@@ -10,15 +10,20 @@ class FinalResultScene(Scene):
         self.win_image = pygame.image.load("geoguessr_game/assets/images/win.jpg")
         self.lose_image = pygame.image.load("geoguessr_game/assets/images/lose.png")
         self.draw_image = pygame.image.load("geoguessr_game/assets/images/draw.jpg")
-        self.font = pygame.font.SysFont(None, 36)
-        self.button_font = pygame.font.SysFont(None, 36)
-        # image resize as IMAGE_SIZE
+        self.font = pygame.font.Font(FONT_PATHS["default"], 36)
+        # 圖片 resize
         self.win_image = pygame.transform.scale(self.win_image, IMAGE_SIZE)
         self.lose_image = pygame.transform.scale(self.lose_image, IMAGE_SIZE)
         self.draw_image = pygame.transform.scale(self.draw_image, IMAGE_SIZE)
-        self.exit_button_size = (200, 60)
-        self.exit_button_rect = pygame.Rect(WINDOW_WIDTH // 2 - self.exit_button_size[0] // 2,
-                                            WINDOW_HEIGHT // 2 + 240, self.exit_button_size[0], self.exit_button_size[1])  # 按鈕大小與位置
+        
+        # 按鈕大小與位置
+        self.button_size = (200, 60)
+        self.exit_button_rect = pygame.Rect(
+            WINDOW_WIDTH // 2 - 250, WINDOW_HEIGHT // 2 + 240, *self.button_size
+        )
+        self.restart_button_rect = pygame.Rect(
+            WINDOW_WIDTH // 2 + 50, WINDOW_HEIGHT // 2 + 240, *self.button_size
+        )
 
     def on_enter(self):
         self.audio_manager.pause_music()
@@ -26,6 +31,7 @@ class FinalResultScene(Scene):
         sound_length = self.audio_manager.get_sound_length("ending")
         pygame.time.set_timer(pygame.USEREVENT, int(sound_length * 1000) + 500)
 
+        # 儲存結果到 CSV
         results_file = "./result/log.csv"
         with open(results_file, mode='a', newline='') as file:
             writer = csv.DictWriter(file, fieldnames=["ID", "Player Choice", "Model Choice", "Correct Answer", "Player Correct", "Model Correct"])
@@ -52,27 +58,31 @@ class FinalResultScene(Scene):
 
         # 判斷贏家和輸家
         if self.manager.user_score > self.manager.model_score:
-            # 玩家贏
             screen.blit(self.win_image, (player_x - IMAGE_SIZE[0] // 2, player_y + 130))
             screen.blit(self.lose_image, (model_x - IMAGE_SIZE[0] // 2, model_y + 130))
         elif self.manager.user_score < self.manager.model_score:
-            # 模型贏
             screen.blit(self.lose_image, (player_x - IMAGE_SIZE[0] // 2, player_y + 130))
             screen.blit(self.win_image, (model_x - IMAGE_SIZE[0] // 2, model_y + 130))
         else:
-            # 平手
             screen.blit(self.draw_image, (player_x - IMAGE_SIZE[0] // 2, player_y + 130))
             screen.blit(self.draw_image, (model_x - IMAGE_SIZE[0] // 2, model_y + 130))
-            
 
-        # 繪製 Exit Game 按鈕
-        # 顯示開始按鈕
+        # 繪製 Exit 按鈕
         exit_button_text = self.font.render("Exit", True, (255, 255, 255))
-        exit_button_color = (29, 106, 150) if not self.exit_button_rect.collidepoint(pygame.mouse.get_pos()) else (45, 135, 190)
+        exit_button_color = (200, 50, 50) if not self.exit_button_rect.collidepoint(pygame.mouse.get_pos()) else (255, 70, 70)
         pygame.draw.rect(screen, exit_button_color, self.exit_button_rect, border_radius=10)
         screen.blit(exit_button_text, (
             self.exit_button_rect.x + (self.exit_button_rect.width - exit_button_text.get_width()) // 2,
             self.exit_button_rect.y + (self.exit_button_rect.height - exit_button_text.get_height()) // 2
+        ))
+
+        # 繪製 Restart 按鈕
+        restart_button_text = self.font.render("Restart", True, (255, 255, 255))
+        restart_button_color = (29, 106, 150) if not self.restart_button_rect.collidepoint(pygame.mouse.get_pos()) else (45, 135, 190)
+        pygame.draw.rect(screen, restart_button_color, self.restart_button_rect, border_radius=10)
+        screen.blit(restart_button_text, (
+            self.restart_button_rect.x + (self.restart_button_rect.width - restart_button_text.get_width()) // 2,
+            self.restart_button_rect.y + (self.restart_button_rect.height - restart_button_text.get_height()) // 2
         ))
 
     def handle_events(self, events):
@@ -80,8 +90,12 @@ class FinalResultScene(Scene):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.exit_button_rect.collidepoint(event.pos):
                     self.audio_manager.play_sound("click")
-                    pygame.quit()  # 結束遊戲
+                    pygame.quit()
                     exit()
+                elif self.restart_button_rect.collidepoint(event.pos):
+                    self.audio_manager.play_sound("click")
+                    self.audio_manager.resume_music()
+                    self.manager.reset()
             elif event.type == pygame.USEREVENT:
                 self.audio_manager.resume_music()
-                pygame.time.set_timer(pygame.USEREVENT, 0)  # 停止計時器
+                pygame.time.set_timer(pygame.USEREVENT, 0)

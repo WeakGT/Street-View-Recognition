@@ -5,7 +5,6 @@ from config import *
 class RoundBeginScene(Scene):
     def __init__(self, manager):
         super().__init__(manager)
-        self.font = pygame.font.Font(None, 96)
         self.start_time = pygame.time.get_ticks()  # 初始化開始時間
         self.duration = 2000  # 倒數計時 2 秒
 
@@ -26,7 +25,8 @@ class RoundBeginScene(Scene):
         screen.fill((255, 255, 255))  # 設定背景顏色
 
         # 顯示回合標題
-        title_text = self.font.render(f"Round {self.manager.round_count}", True, (0, 0, 0))
+        title_font = pygame.font.Font(FONT_PATHS["default"], 72)
+        title_text = title_font.render(f"Round {self.manager.round_count}", True, (0, 0, 0))
         # 將文字置中
         title_text_rect = title_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 - 100))
         screen.blit(title_text, title_text_rect)

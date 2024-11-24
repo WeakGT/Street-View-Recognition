@@ -26,7 +26,6 @@ class GameScene(Scene):
         self.model_score_feedback_timer = None
         # 模型
         self.model = Model("model/model-19-1121.pth")   # 替換模型路徑
-        self.font = pygame.font.SysFont(None, 28)
         self.random_row = None
 
     def on_enter(self):
@@ -117,24 +116,25 @@ class GameScene(Scene):
         screen.fill((255, 255, 255))
 
         # 顯示回合標題
-        title_font = pygame.font.SysFont(None, 48)
+        title_font = pygame.font.Font(FONT_PATHS["default"], 48)
         title_text = title_font.render(f"Round {self.manager.round_count}", True, (0, 0, 0))
         title_text_x, title_text_y = WINDOW_WIDTH // 2, WINDOW_HEIGHT // 10 - 20
         title_text_rect = title_text.get_rect(center=(title_text_x, title_text_y))
         screen.blit(title_text, title_text_rect)
 
         # 顯示 player 和 model 分數
-        player_score_text = self.font.render(f"Player Score: {self.manager.user_score}", True, (0, 0, 0))
-        model_score_text = self.font.render(f"Model Score: {self.manager.model_score}", True, (0, 0, 0))
-        player_score_x, player_score_y = 40, title_text_y + 90
-        model_score_x, model_score_y = 40, title_text_y + 130
+        score_font = pygame.font.Font(FONT_PATHS["default"], 28)
+        player_score_text = score_font.render(f"Player Score: {self.manager.user_score}", True, (0, 0, 0))
+        model_score_text = score_font.render(f"Model Score: {self.manager.model_score}", True, (0, 0, 0))
+        player_score_x, player_score_y = 40, title_text_y + 80
+        model_score_x, model_score_y = 40, title_text_y + 120
         screen.blit(player_score_text, (player_score_x, player_score_y))
         screen.blit(model_score_text, (model_score_x, model_score_y))
 
         # 顯示"The player has mades a guess"和"The model has mades a guess"
         # 顏色:(66, 112, 140)
         current_time = time.time()
-        guess_font = pygame.font.SysFont(None, 30)
+        guess_font = pygame.font.Font(FONT_PATHS["default"], 24)
         if self.player_score_feedback_timer and current_time - self.player_score_feedback_timer[0] < 1:
             feedback_text = guess_font.render(self.player_score_feedback_timer[1], True, (66, 112, 140))
             screen.blit(feedback_text, (player_score_x + player_score_text.get_width() + 10, player_score_y))  # 顯示在玩家分數旁邊
@@ -143,7 +143,8 @@ class GameScene(Scene):
             screen.blit(feedback_text, (model_score_x + model_score_text.get_width() + 10, model_score_y))  # 顯示在模型分數旁邊
 
         # 顯示倒數計時文字
-        timer_text = self.font.render(f"Time Left: {self.time_left}", True, (0, 0, 0))
+        timer_font = pygame.font.Font(FONT_PATHS["default"], 24)
+        timer_text = timer_font.render(f"Time Left: {self.time_left}", True, (0, 0, 0))
         screen.blit(timer_text, (WINDOW_WIDTH // 2 - timer_text.get_width() // 2, title_text_y + 20))
 
         # 倒數計時條
@@ -162,7 +163,8 @@ class GameScene(Scene):
         screen.blit(self.images[0], (image_x, image_y))
 
         # 顯示提示文字
-        hint_text = self.font.render("Guess the country based on the street view image", True, (0, 0, 0))
+        hint_font = pygame.font.Font(FONT_PATHS["default"], 24)
+        hint_text = hint_font.render("Guess the country based on the street view image", True, (0, 0, 0))
         screen.blit(hint_text, (WINDOW_WIDTH // 2 - hint_text.get_width() // 2, image_y + IMAGE_SIZE[1] + 20))
 
         # 設置按鈕位置
@@ -192,7 +194,8 @@ class GameScene(Scene):
                 button_color = (200, 200, 200)  # 預設顏色
 
             pygame.draw.rect(screen, button_color, button_rect, border_radius=10)
-            text = self.font.render(city, True, (0, 0, 0))
+            button_font = pygame.font.Font(FONT_PATHS["button"], 28)
+            text = button_font.render(city, True, (0, 0, 0))
             screen.blit(text, (button_x + (button_width - text.get_width()) // 2,
                             button_y + (button_height - text.get_height()) // 2))
 

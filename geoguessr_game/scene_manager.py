@@ -35,6 +35,14 @@ class SceneManager:
         self.current_scene = self.scenes["start"]
         self.model_probabilities = None
 
+    def reset(self):
+        self.round_count = 0
+        self.user_score = 0
+        self.model_score = 0
+        self.results_data = []
+        self.current_scene = self.scenes["start"]
+        self.model_probabilities = None
+
     def go_to(self, scene_name):
         self.current_scene = self.scenes[scene_name]
         if hasattr(self.current_scene, "on_enter"):
