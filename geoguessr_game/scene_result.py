@@ -39,6 +39,7 @@ class ResultScene(Scene):
                 mouse_pos = event.pos
                 if self.next_button_rect and self.next_button_rect.collidepoint(mouse_pos):
                     # 點擊按鈕後切換到下一回合
+                    self.audio_manager.play_sound("click")
                     if self.manager.round_count < NUM_ROUNDS:
                         self.manager.go_to("round_begin")
                     else:

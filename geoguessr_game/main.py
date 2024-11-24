@@ -10,7 +10,7 @@ clock = pygame.time.Clock()
 
 # 遊戲主迴圈
 def main():
-    manager = SceneManager()
+    scene_manager = SceneManager()
 
     while True:
         events = pygame.event.get()
@@ -19,9 +19,9 @@ def main():
                 pygame.quit()
                 sys.exit()
 
-        manager.handle_events(events)
-        manager.update()
-        manager.draw(screen)
+        scene_manager.handle_events(events)
+        scene_manager.update()
+        scene_manager.draw(screen)
 
         pygame.display.flip()
         clock.tick(60)

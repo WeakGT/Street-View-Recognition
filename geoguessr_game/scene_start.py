@@ -7,11 +7,14 @@ class StartScene(Scene):
         super().__init__(manager)
         self.window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         self.start_button_rect = pygame.Rect(WINDOW_WIDTH // 2 - 100, WINDOW_HEIGHT * 6 // 7, 200, 60)  # 按鈕大小與位置
+        self.audio_manager.load_music("geoguessr_game/assets/audio/music/background.mp3")
+
 
     def handle_events(self, events):
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.start_button_rect.collidepoint(event.pos):
+                    self.audio_manager.play_sound("click")
                     self.manager.go_to("round_begin")
 
     def draw(self, screen):

@@ -21,6 +21,11 @@ class FinalResultScene(Scene):
                                             WINDOW_HEIGHT // 2 + 240, self.exit_button_size[0], self.exit_button_size[1])  # 按鈕大小與位置
 
     def on_enter(self):
+        self.audio_manager.pause_music()
+        self.audio_manager.play_sound("ending")
+        sound_length = self.audio_manager.get_sound_length("ending")
+        pygame.time.set_timer(pygame.USEREVENT, int(sound_length * 1000) + 500)
+
         results_file = "./result/log.csv"
         with open(results_file, mode='a', newline='') as file:
             writer = csv.DictWriter(file, fieldnames=["ID", "Player Choice", "Model Choice", "Correct Answer", "Player Correct", "Model Correct"])
@@ -74,5 +79,9 @@ class FinalResultScene(Scene):
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.exit_button_rect.collidepoint(event.pos):
+                    self.audio_manager.play_sound("click")
                     pygame.quit()  # 結束遊戲
                     exit()
+            elif event.type == pygame.USEREVENT:
+                self.audio_manager.resume_music()
+                pygame.time.set_timer(pygame.USEREVENT, 0)  # 停止計時器

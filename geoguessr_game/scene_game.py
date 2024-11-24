@@ -213,6 +213,7 @@ class GameScene(Scene):
                     button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
 
                     if button_rect.collidepoint(mouse_pos):
+                        self.audio_manager.play_sound("click")
                         self.handle_player_choice(i)
                         break
 
