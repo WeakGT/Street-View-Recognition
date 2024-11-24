@@ -6,8 +6,8 @@ from config import *
 class ResultScene(Scene):
     def __init__(self, manager):
         super().__init__(manager)
-        self.font = pygame.font.SysFont(None, 60)
-        self.button_font = pygame.font.SysFont(None, 60)
+        self.font = pygame.font.SysFont(None, 36)
+        self.button_font = pygame.font.SysFont(None, 36)
         self.next_button_rect = None
 
     def on_enter(self):
@@ -45,19 +45,19 @@ class ResultScene(Scene):
         player_result_text = f"Player: {'Correct' if self.player_correct else 'Incorrect'}"
         player_result_color = (167, 201, 87) if self.player_correct else (188, 71, 73)
         player_result_render = self.font.render(player_result_text, True, player_result_color)
-        screen.blit(player_result_render, (WINDOW_WIDTH // 2 - player_result_render.get_width() // 2 - 350, 260))
+        screen.blit(player_result_render, (WINDOW_WIDTH // 4 - player_result_render.get_width() // 2, WINDOW_HEIGHT // 2 - 100))
         player_guess_text = f"Player's Guess: {self.player_choice}"
         player_guess_render = self.font.render(player_guess_text, True, (0, 0, 0))
-        screen.blit(player_guess_render, (WINDOW_WIDTH // 2 - player_guess_render.get_width() // 2 - 350, 310))
+        screen.blit(player_guess_render, (WINDOW_WIDTH // 4 - player_guess_render.get_width() // 2, WINDOW_HEIGHT // 2 - 50))
 
         # 顯示模型的猜測結果是否正確
         model_result_text = f"Model: {'Correct' if self.model_correct else 'Incorrect'}"
         model_result_color = (167, 201, 87) if self.model_correct else (188, 71, 73)
         model_result_render = self.font.render(model_result_text, True, model_result_color)
-        screen.blit(model_result_render, (WINDOW_WIDTH // 2 - model_result_render.get_width() // 2 + 350, 260))
+        screen.blit(model_result_render, (WINDOW_WIDTH * 3 // 4 - model_result_render.get_width() // 2, WINDOW_HEIGHT // 2 - 100))
         model_guess_text = f"Model's Guess: {self.model_choice}"
         model_guess_render = self.font.render(model_guess_text, True, (0, 0, 0))
-        screen.blit(model_guess_render, (WINDOW_WIDTH // 2 - model_guess_render.get_width() // 2 + 350, 310))
+        screen.blit(model_guess_render, (WINDOW_WIDTH * 3 // 4 - model_guess_render.get_width() // 2, WINDOW_HEIGHT // 2 - 50))
 
         # 顯示正確城市名稱
         correct_city_text = f"Country: {self.correct_city}"
@@ -65,10 +65,10 @@ class ResultScene(Scene):
         screen.blit(correct_city_render, (WINDOW_WIDTH // 2 - correct_city_render.get_width() // 2, WINDOW_HEIGHT // 2 + 160))
 
         # 設置 "Next Round" 按鈕
-        button_width = 400
-        button_height = 70
+        button_width = 320
+        button_height = 60
         button_x = (WINDOW_WIDTH - button_width) // 2
-        button_y = WINDOW_HEIGHT - 300  # 按鈕位於底部
+        button_y = WINDOW_HEIGHT // 2 + 200  # 按鈕位於底部
         self.next_button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
 
         # 判斷滑鼠是否懸停在按鈕上

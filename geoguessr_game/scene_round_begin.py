@@ -5,18 +5,22 @@ from config import *
 class RoundBeginScene(Scene):
     def __init__(self, manager):
         super().__init__(manager)
-        self.font = pygame.font.Font(None, 120)
+        self.font = pygame.font.Font(None, 96)
         self.start_time = pygame.time.get_ticks()  # 初始化開始時間
-        self.duration = 3000  # 倒數計時 3 秒
+        self.duration = 2000  # 倒數計時 2 秒
 
     def on_enter(self):
         self.start_time = pygame.time.get_ticks()  # 每次進入場景重置開始時間
         self.manager.round_count += 1  # 回合數加 1
 
     def update(self):
-        # 檢查是否超過 3 秒，超過則進入遊戲場景
+        # 檢查是否超過 2 秒或是滑鼠點擊，超過則進入遊戲場景
         if pygame.time.get_ticks() - self.start_time > self.duration:
             self.manager.go_to("game")
+        # 按下滑鼠也可以進入遊戲場景
+        if pygame.time.get_ticks() - self.start_time > 500:
+            if pygame.mouse.get_pressed()[0]:
+                self.manager.go_to("game")
 
     def draw(self, screen):
         screen.fill((255, 255, 255))  # 設定背景顏色

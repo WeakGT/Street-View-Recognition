@@ -9,13 +9,15 @@ class FinalResultScene(Scene):
         self.win_image = pygame.image.load("geoguessr_game/assets/images/win.jpg")
         self.lose_image = pygame.image.load("geoguessr_game/assets/images/lose.png")
         self.draw_image = pygame.image.load("geoguessr_game/assets/images/draw.jpg")
-        self.font = pygame.font.SysFont(None, 80)
-        self.button_font = pygame.font.SysFont(None, 60)
+        self.font = pygame.font.SysFont(None, 36)
+        self.button_font = pygame.font.SysFont(None, 36)
         # image resize as IMAGE_SIZE
         self.win_image = pygame.transform.scale(self.win_image, IMAGE_SIZE)
         self.lose_image = pygame.transform.scale(self.lose_image, IMAGE_SIZE)
         self.draw_image = pygame.transform.scale(self.draw_image, IMAGE_SIZE)
-        self.exit_button_rect = pygame.Rect(WINDOW_WIDTH // 2 - 125, WINDOW_HEIGHT // 2 + 240, 250, 75)  # 按鈕大小與位置
+        self.exit_button_size = (200, 60)
+        self.exit_button_rect = pygame.Rect(WINDOW_WIDTH // 2 - self.exit_button_size[0] // 2,
+                                            WINDOW_HEIGHT // 2 + 240, self.exit_button_size[0], self.exit_button_size[1])  # 按鈕大小與位置
 
 
     def draw(self, screen):
@@ -29,8 +31,8 @@ class FinalResultScene(Scene):
         model_accuracy_text = self.font.render(f"Accuracy: {self.manager.model_score / NUM_ROUNDS * 100:.2f}%", True, (0, 0, 0))
         
         # 分數顯示位置
-        player_x, player_y = WINDOW_WIDTH // 2 - 350, 260
-        model_x, model_y = WINDOW_WIDTH // 2 + 350, 260
+        player_x, player_y = WINDOW_WIDTH // 4, WINDOW_HEIGHT // 2 - 200
+        model_x, model_y = WINDOW_WIDTH * 3 // 4, WINDOW_HEIGHT // 2 - 200
         
         screen.blit(player_score_text, (player_x  - player_score_text.get_width() // 2, player_y))
         screen.blit(model_score_text, (model_x - model_score_text.get_width() // 2 , model_y))
@@ -55,7 +57,8 @@ class FinalResultScene(Scene):
         # 繪製 Exit Game 按鈕
         # 顯示開始按鈕
         exit_button_text = self.font.render("Exit", True, (255, 255, 255))
-        pygame.draw.rect(screen, (29, 106, 150), self.exit_button_rect)
+        exit_button_color = (29, 106, 150) if not self.exit_button_rect.collidepoint(pygame.mouse.get_pos()) else (45, 135, 190)
+        pygame.draw.rect(screen, exit_button_color, self.exit_button_rect, border_radius=10)
         screen.blit(exit_button_text, (
             self.exit_button_rect.x + (self.exit_button_rect.width - exit_button_text.get_width()) // 2,
             self.exit_button_rect.y + (self.exit_button_rect.height - exit_button_text.get_height()) // 2
