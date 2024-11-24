@@ -4,6 +4,7 @@ from scene_round_begin import RoundBeginScene
 from scene_game import GameScene
 from scene_result import ResultScene
 from scene_final_result import FinalResultScene
+import os, csv
 
 class SceneManager:
     def __init__(self):
@@ -12,6 +13,18 @@ class SceneManager:
         #分數
         self.user_score = 0
         self.model_score = 0
+        self.results_data = []
+        self.results_file = "./result/log.csv"
+        # 檢查結果文件是否存在，如果不存在則創建並寫入標題行
+        if not os.path.exists(self.results_file):
+            dir = os.path.dirname(self.results_file)
+            if not os.path.exists(dir):
+                os.makedirs(dir)
+
+            with open(self.results_file, mode='w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(["ID", "Player Choice", "Model Choice", "Correct Answer", "Player Correct", "Model Correct"])
+
         self.scenes = {
             "start": StartScene(self),
             "round_begin": RoundBeginScene(self),

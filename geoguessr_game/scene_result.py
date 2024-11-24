@@ -24,6 +24,15 @@ class ResultScene(Scene):
         if self.model_correct:
             self.manager.model_score += 1
 
+        self.manager.results_data.append({
+            "ID": len(self.manager.results_data) + 1,
+            "Player Choice": self.player_choice,
+            "Model Choice": self.model_choice,
+            "Correct Answer": self.correct_city,
+            "Player Correct": int(self.player_correct),
+            "Model Correct": int(self.model_correct)
+        })
+
     def handle_events(self, events):
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:

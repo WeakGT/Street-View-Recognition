@@ -1,6 +1,7 @@
 import pygame
 from base_scene import Scene
 from config import *
+import csv
 
 class FinalResultScene(Scene):
     def __init__(self, manager):
@@ -19,6 +20,11 @@ class FinalResultScene(Scene):
         self.exit_button_rect = pygame.Rect(WINDOW_WIDTH // 2 - self.exit_button_size[0] // 2,
                                             WINDOW_HEIGHT // 2 + 240, self.exit_button_size[0], self.exit_button_size[1])  # 按鈕大小與位置
 
+    def on_enter(self):
+        results_file = "./result/log.csv"
+        with open(results_file, mode='a', newline='') as file:
+            writer = csv.DictWriter(file, fieldnames=["ID", "Player Choice", "Model Choice", "Correct Answer", "Player Correct", "Model Correct"])
+            writer.writerows(self.manager.results_data)
 
     def draw(self, screen):
         # 清空畫面

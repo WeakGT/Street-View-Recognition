@@ -18,7 +18,7 @@ class RoundBeginScene(Scene):
         if pygame.time.get_ticks() - self.start_time > self.duration:
             self.manager.go_to("game")
         # 按下滑鼠也可以進入遊戲場景
-        if pygame.time.get_ticks() - self.start_time > 500:
+        if pygame.time.get_ticks() - self.start_time > self.duration // 10:
             if pygame.mouse.get_pressed()[0]:
                 self.manager.go_to("game")
 
