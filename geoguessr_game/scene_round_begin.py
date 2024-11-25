@@ -6,7 +6,7 @@ class RoundBeginScene(Scene):
     def __init__(self, manager):
         super().__init__(manager)
         self.start_time = pygame.time.get_ticks()  # 初始化開始時間
-        self.duration = 2000  # 倒數計時 2 秒
+        self.duration = 1500  # 倒數計時 1.5 秒
 
     def on_enter(self):
         self.start_time = pygame.time.get_ticks()  # 每次進入場景重置開始時間
@@ -17,9 +17,9 @@ class RoundBeginScene(Scene):
         if pygame.time.get_ticks() - self.start_time > self.duration:
             self.manager.go_to("game")
         # 按下滑鼠也可以進入遊戲場景
-        if pygame.time.get_ticks() - self.start_time > self.duration // 10:
-            if pygame.mouse.get_pressed()[0]:
-                self.manager.go_to("game")
+        #if pygame.time.get_ticks() - self.start_time > self.duration // 10:
+        #    if pygame.mouse.get_pressed()[0]:
+        #        self.manager.go_to("game")
 
     def draw(self, screen):
         screen.fill((255, 255, 255))  # 設定背景顏色
