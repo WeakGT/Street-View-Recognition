@@ -37,9 +37,11 @@ class FinalResultScene(Scene):
             writer = csv.DictWriter(file, fieldnames=["ID", "Player Choice", "Model Choice", "Correct Answer", "Player Correct", "Model Correct"])
             writer.writerows(self.manager.results_data)
 
+    def update(self):
+        super().update()
+
     def draw(self, screen):
-        # 清空畫面
-        screen.fill((255, 255, 255))
+        super().draw(screen)
 
         # 顯示分數
         player_score_text = self.font.render(f"Player Score: {self.manager.user_score}", True, (0, 0, 0))
@@ -48,8 +50,8 @@ class FinalResultScene(Scene):
         model_accuracy_text = self.font.render(f"Accuracy: {self.manager.model_score / NUM_ROUNDS * 100:.2f}%", True, (0, 0, 0))
         
         # 分數顯示位置
-        player_x, player_y = WINDOW_WIDTH // 4, WINDOW_HEIGHT // 2 - 200
-        model_x, model_y = WINDOW_WIDTH * 3 // 4, WINDOW_HEIGHT // 2 - 200
+        player_x, player_y = WINDOW_WIDTH // 4, WINDOW_HEIGHT // 2 - 240
+        model_x, model_y = WINDOW_WIDTH * 3 // 4, WINDOW_HEIGHT // 2 - 240
         
         screen.blit(player_score_text, (player_x  - player_score_text.get_width() // 2, player_y))
         screen.blit(model_score_text, (model_x - model_score_text.get_width() // 2 , model_y))
