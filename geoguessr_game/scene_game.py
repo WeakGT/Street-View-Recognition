@@ -15,6 +15,7 @@ class GameScene(Scene):
         self.start_time = time.time()
         self.result_timer = None
         # 回答
+        self.image_path = None
         self.player_answered = False
         self.model_answered = False
         self.player_choosen_city = None
@@ -51,6 +52,7 @@ class GameScene(Scene):
         # step 2: load the image from data/256x256_global/ + 'image' path
         # full_image_path = f"data/256x256_global/{image_path}"
         full_image_path = f"data/processed/val/{image_path}"
+        self.image_path = full_image_path
         # 載入並縮放圖片
         self.images = [
             pygame.transform.scale(pygame.image.load(full_image_path), (IMAGE_SIZE[0], IMAGE_SIZE[1]))
@@ -224,6 +226,7 @@ class GameScene(Scene):
 
     def move_to_result_scene(self):
         self.manager.result_data = {
+            "image_path": self.image_path,
             "correct_city": self.correct_city,
             "player_choice": self.player_choosen_city,
             "model_choice": self.model_choosen_city,

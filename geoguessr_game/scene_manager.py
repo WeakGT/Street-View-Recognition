@@ -23,7 +23,7 @@ class SceneManager:
 
             with open(self.results_file, mode='w', newline='') as file:
                 writer = csv.writer(file)
-                writer.writerow(["ID", "Player Choice", "Model Choice", "Correct Answer", "Player Correct", "Model Correct"])
+                writer.writerow(["ID", "Image", "Player Choice", "Model Choice", "Correct Answer", "Player Correct", "Model Correct"])
 
         self.scenes = {
             "start": StartScene(self),

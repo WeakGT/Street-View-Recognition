@@ -15,6 +15,7 @@ class ResultScene(Scene):
         self.correct_city = self.manager.result_data["correct_city"]
         self.player_choice = self.manager.result_data["player_choice"]
         self.model_choice = self.manager.result_data["model_choice"]
+        self.image_path = self.manager.result_data["image_path"]
 
         # 判斷玩家是否回答正確
         self.player_correct = self.player_choice == self.correct_city
@@ -26,6 +27,7 @@ class ResultScene(Scene):
 
         self.manager.results_data.append({
             "ID": len(self.manager.results_data) + 1,
+            "Image Path":  self.image_path,
             "Player Choice": self.player_choice,
             "Model Choice": self.model_choice,
             "Correct Answer": self.correct_city,

@@ -34,7 +34,7 @@ class FinalResultScene(Scene):
         # 儲存結果到 CSV
         results_file = "./result/log.csv"
         with open(results_file, mode='a', newline='') as file:
-            writer = csv.DictWriter(file, fieldnames=["ID", "Player Choice", "Model Choice", "Correct Answer", "Player Correct", "Model Correct"])
+            writer = csv.DictWriter(file, fieldnames=["ID", "Image Path", "Player Choice", "Model Choice", "Correct Answer", "Player Correct", "Model Correct"])
             writer.writerows(self.manager.results_data)
 
     def update(self):
