@@ -14,4 +14,4 @@ model/*.pth
 result/*.csv
 
 # Processed Data
-**/processed/
+#**/processed/
