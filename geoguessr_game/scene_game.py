@@ -41,14 +41,16 @@ class GameScene(Scene):
 
     def load_images_and_options(self):
         # load the pictures in data/256x256_global
-        # step 1: from data/256x256_global/picture_coords.csv, choose an random 'index' and its corresponding 'image' and 'country'
-        csv_path = "data/256x256_global/picture_coords.csv"
+        # step 1: choose an random 'index' and its corresponding 'image' and 'country'
+        # csv_path = "data/256x256_global/picture_coords.csv"
+        csv_path = "data/processed/val.csv"
         picture_coords = pd.read_csv(csv_path)
         self.random_row = picture_coords.sample()  # 隨機選擇一行
         image_path = self.random_row['image'].values[0]  # 獲取圖片路徑
         country = self.random_row['country'].values[0]  # 獲取國家名稱
         # step 2: load the image from data/256x256_global/ + 'image' path
-        full_image_path = f"data/256x256_global/{image_path}"
+        # full_image_path = f"data/256x256_global/{image_path}"
+        full_image_path = f"data/processed/val/{image_path}"
         # 載入並縮放圖片
         self.images = [
             pygame.transform.scale(pygame.image.load(full_image_path), (IMAGE_SIZE[0], IMAGE_SIZE[1]))

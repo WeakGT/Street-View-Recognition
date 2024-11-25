@@ -12,3 +12,6 @@ model/*.pth
 
 # CSV loggings
 result/*.csv
+
+# Processed Data
+**/processed/
