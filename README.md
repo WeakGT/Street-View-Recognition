@@ -3,8 +3,9 @@
 ## model
 put .pth into ./model
 ## Run Game
-1. cd ./Machine-Learning-Final-Project
-2. python ./geoguessr_game/main.py
+1. go to data, run train_test_split.py
+2. cd ./Machine-Learning-Final-Project
+3. python ./geoguessr_game/main.py
 
 ---
 ## Building env for training
