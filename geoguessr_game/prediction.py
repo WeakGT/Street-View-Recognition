@@ -6,7 +6,7 @@ from PIL import Image
 from config import country_list
 
 # 確保將專案根目錄加入 sys.path
-project_root = os.path.join(os.path.dirname(__file__), '..')
+project_root = os.path.join(os.path.dirname(__file__), '.')
 sys.path.append(project_root)
 from model.model import StreetViewNet
 

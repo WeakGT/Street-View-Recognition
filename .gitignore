@@ -8,7 +8,7 @@
 **/myenv/
 
 # 忽略所有 model 資料夾下的.pth檔案
-model/*.pth
+geoguessr_game/model/*.pth
 
 # CSV loggings
 result/*.csv
