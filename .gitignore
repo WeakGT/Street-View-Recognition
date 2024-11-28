@@ -1,2 +1,17 @@
 ## for macOS
 **/.DS_Store
+
+## Python Cache
+**/__pycache__/
+
+## Virtual Environment
+**/myenv/
+
+# 忽略所有 model 資料夾下的.pth檔案
+geoguessr_game/model/*.pth
+
+# CSV loggings
+result/*.csv
+
+# Processed Data
+#**/processed/
