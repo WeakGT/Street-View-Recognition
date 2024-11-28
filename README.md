@@ -1,3 +1,13 @@
+# Machine-Learning-Final-Project
+
+## model
+put .pth into ./model
+## Run Game
+1. go to data, run train_test_split.py
+2. cd ./Machine-Learning-Final-Project
+3. python ./geoguessr_game/main.py
+
+---
 ## Building env for training
 1. Create a virtual environment
 2. `pip install -r requirements.txt`
