@@ -1,5 +1,0 @@
-WINDOW_WIDTH = 640
-WINDOW_HEIGHT = 640
-IMAGE_SIZE = (170, 170)  # 確保圖片大小合適
-ROUND_TIME = 20  # 每回合 20 秒
-NUM_ROUNDS = 10  # 總共 10 回合
