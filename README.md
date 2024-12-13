@@ -1,6 +1,6 @@
-# GeoGuessr-like Game
+# Street View Recognition Game
 
-This project implements a GeoGuessr-inspired game where players compete against a machine learning model in predicting locations based on images. The project is divided into three main components: data collection, model training, and gameplay.
+This project implements a Street View Recognition Game, which is inspired by GeoGuessr, where players compete against a machine learning model in predicting locations based on images. The project is divided into three main components: data collection, model training, and gameplay.
 
 ---
 
