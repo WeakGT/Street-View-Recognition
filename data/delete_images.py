@@ -2,11 +2,11 @@ import os
 import pandas as pd
 
 # 定義路徑
-data_folder = '256x256_global'
-csv_path = os.path.join(data_folder, 'picture_coords.csv')
+data_folder = 'processed/test'
+csv_path = os.path.join(data_folder, 'test.csv')
 txt_path = 'bad_coords.txt'
 
-while input('Have you closed the file "picture_coords.csv" yet? (y/n)') != 'y':
+while input('Have you closed the file "test.csv" yet? (y/n)') != 'y':
     continue    
 print('Start progressing...')
 

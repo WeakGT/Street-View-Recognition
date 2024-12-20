@@ -3,11 +3,12 @@
 .\{your_path_name}\Scripts\activate
 
 [run the program]
-python get_images_global.py --output 256x256_global --icount {your quota left} --key {your API key}
+python get_images_global.py --icount 1000 --key {your API key}
 
 [leave virtual environment]
 deactivate
 '''
+
 import osmnx as ox
 import geopandas as gpd
 import requests         # HTTP req for API
@@ -24,7 +25,7 @@ def get_args():
     parser.add_argument("--city", help="The city name you want to generate GPS coordinates from", default='Auckland', type=str) # required=True
     parser.add_argument("--country", help="The country name you want to generate GPS coordinates from", default='New Zealand', type=str) # required=True
     parser.add_argument("--output", help="The output folder where the images will be stored, (defaults to: processed/test/)", default='processed/test/', type=str)
-    parser.add_argument("--icount", help="The amount of images to pull (defaults to 10)", default=10, type=int)
+    parser.add_argument("--icount", help="The amount of images to pull (defaults to 10)", default=1000, type=int)
     parser.add_argument("--key", help="Your Google Street View API Key", type=str, required=True)
     return parser.parse_args()
 
