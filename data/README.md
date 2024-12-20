@@ -16,26 +16,21 @@ about 5000 images for each city (country)
 
 
 - Asia
-[v] Bangkok (Thailand)
-[v] New Delhi (India)
-[] Osaka (Japan)
-[] (Singapore)
+[] Bangkok (Thailand)
+[] New Delhi (India)
 
 - Europe
-[v] Paris (France)
-[v] Helsinki (Finland)
-[] Berlin (Germany)
+[] Paris (France)
+[] Helsinki (Finland)
 
 - America
-[v] New York (United States)
-[v] Toronto (Canada)
+[] New York (United States)
+[] Toronto (Canada)
 
 - Africa
-[x] Cairo (Egypt) No images on Google API
-[x] Luanda (Angola) No images on Google API
-[v] Gauteng (South Africa)
-[v] Nairobi (Kenya)
+[] Gauteng (South Africa)
+[] Nairobi (Kenya)
 
 - Australia
-[-] Sydney (Australia)
-[v] Auckland (New Zealand)
+[] Sydney (Australia)
+[] Auckland (New Zealand)

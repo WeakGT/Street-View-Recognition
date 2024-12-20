@@ -23,7 +23,7 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--city", help="The city name you want to generate GPS coordinates from", default='Auckland', type=str) # required=True
     parser.add_argument("--country", help="The country name you want to generate GPS coordinates from", default='New Zealand', type=str) # required=True
-    parser.add_argument("--output", help="The output folder where the images will be stored, (defaults to: 256x256_global/)", default='256x256_global/', type=str)
+    parser.add_argument("--output", help="The output folder where the images will be stored, (defaults to: processed/test/)", default='processed/test/', type=str)
     parser.add_argument("--icount", help="The amount of images to pull (defaults to 10)", default=10, type=int)
     parser.add_argument("--key", help="Your Google Street View API Key", type=str, required=True)
     return parser.parse_args()
@@ -36,7 +36,7 @@ def main():
 
     # Open and create all the necessary files & folders
     os.makedirs(args.output, exist_ok=True)
-    file_path = os.path.join(args.output, 'picture_coords.csv')
+    file_path = os.path.join(args.output, 'test.csv')
     if not os.path.exists(file_path):
         start_from = 0
         coord_output_file = open(file_path, 'w', newline='')
@@ -61,7 +61,6 @@ def main():
 
         # generate some random point
         # points_latlon = grc.generate_coordinates(grc.EU, num_points=100)
-        points = ox.utils_geo.sample_points(ox.convert.to_undirected(Gp), 100) # generate some random point
         points = ox.utils_geo.sample_points(ox.convert.to_undirected(Gp), 100) # generate some random point
         points_gdf = gpd.GeoSeries(points, crs=Gp.graph['crs'])
         points_latlon = points_gdf.to_crs(epsg=4326)

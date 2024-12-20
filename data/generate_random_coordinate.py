@@ -1,3 +1,4 @@
+'''
 import shapefile
 from shapely.geometry import Point, shape
 import numpy as np
@@ -32,3 +33,4 @@ def generate_coordinates(shapes, num_points=100, min_x=-11, max_x=26, min_y=37, 
         point = sample(shapes, min_x, max_x, min_y, max_y)
         coordinates.append(point)
     return coordinates
+'''
