@@ -10,7 +10,7 @@
 ## Code
 **/trained_models/
 **/runs/
-**/processed/
+#**/processed/
 
 ## model
 geoguessr_game/model/*.pth

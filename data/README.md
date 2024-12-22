@@ -11,8 +11,8 @@
 3. Deactivate before leaving: `deactivate`
 
 ## Check List (global ver.)
-about 5000 images for each city (country)
-`v`: 5000 images
+about 1000 images for each city (country)
+`v`: 1000 images
 
 
 - Asia
@@ -24,12 +24,12 @@ about 5000 images for each city (country)
 [] Helsinki (Finland)
 
 - America
-[] New York (United States)
-[] Toronto (Canada)
+[v] New York (United States)
+[v] Toronto (Canada)
 
 - Africa
-[] Gauteng (South Africa)
-[] Nairobi (Kenya)
+[v] Gauteng (South Africa)
+[v] Nairobi (Kenya)
 
 - Australia
 [] Sydney (Australia)
