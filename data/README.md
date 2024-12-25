@@ -14,14 +14,13 @@
 about 1000 images for each city (country)
 `v`: 1000 images
 
-
 - Asia
-[] Bangkok (Thailand)
-[] New Delhi (India)
+[v] Bangkok (Thailand)
+[v] New Delhi (India)
 
 - Europe
-[] Paris (France)
-[] Helsinki (Finland)
+[v] Paris (France)
+[v] Helsinki (Finland)
 
 - America
 [v] New York (United States)
@@ -32,5 +31,5 @@ about 1000 images for each city (country)
 [v] Nairobi (Kenya)
 
 - Australia
-[] Sydney (Australia)
-[] Auckland (New Zealand)
+[v] Sydney (Australia)
+[v] Auckland (New Zealand)
