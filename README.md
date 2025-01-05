@@ -60,7 +60,7 @@ The closer the predictions are to the correct location, the higher the score. Th
 The project is organized as follows:
 
 ```plaintext
-GeoGuessr-like Game
+Street-View-Recognition
 ├── /data                           # Handles dataset collection, cleaning, and preprocessing
 │   ├── /256x256_global             # Contains the entire dataset
 │   ├── /processed                  # Contains split training and validation sets
@@ -111,8 +111,8 @@ GeoGuessr-like Game
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/WeakGT/GeoGuessr-like-Game.git
-   cd GeoGuessr-like-Game
+   git clone https://github.com/WeakGT/Street-View-Recognition.git
+   cd Street-View-Recognition
    ```
 
 2. **Install Dependencies**:
